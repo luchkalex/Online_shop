@@ -2,9 +2,10 @@ package com.example.sweater.controllers;
 
 import com.example.sweater.Models.Category;
 import com.example.sweater.servises.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
 @RequestMapping(path = "/cat") // This means URL's start with /demo (after Application path)
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
 
     @GetMapping(path = "/add") // Map ONLY POST Requests
