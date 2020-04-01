@@ -2,6 +2,7 @@ package com.example.sweater.Models;
 
 import javax.persistence.*;
 
+/*Categories of products*/
 @Entity
 @Table(name = "category")
 public class Category {
