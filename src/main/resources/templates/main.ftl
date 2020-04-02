@@ -4,6 +4,7 @@
 <@c.page>
     <div>
         <@l.logout/>
+        <span><a href="/users">User list</a></span>
     </div>
 
     <div>
@@ -21,7 +22,7 @@
     <div>Список сообщений</div>
     <form method="get" action="/main">
         <label>
-            <input type="text" name="filter" value="${filter}">
+            <input type="text" name="filter" value="${filter ! ""}">
         </label>
         <button type="submit">Найти</button>
     </form>
