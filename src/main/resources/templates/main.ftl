@@ -8,13 +8,14 @@
     </div>
 
     <div>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <label>
                 <input type="text" name="text" placeholder="Введите сообщение"/>
             </label>
             <label>
                 <input type="text" name="tag" placeholder="Тэг">
             </label>
+            <input type="file" name="file">
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit">Добавить</button>
         </form>
@@ -33,6 +34,9 @@
             <span>${message.text}</span>
             <i>${message.tag}</i>
             <strong>${message.authorName}</strong>
+            <#if message.filename??>
+                <img src="/img/${message.filename}" alt="Image">
+            </#if>
         </div>
     <#else >
         No messages
