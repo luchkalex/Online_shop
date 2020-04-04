@@ -19,6 +19,8 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private boolean active;
+    private String email;
+    private String activationCode;
 
     /*@ElementCollection - We use @ElementCollection annotation to declare an element-collection
         mapping. All the records of the collection are stored in a separate table.
@@ -62,6 +64,22 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String mail) {
+        this.email = mail;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 
     public boolean isAdmin() {
