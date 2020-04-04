@@ -1,4 +1,6 @@
 <#include "security.ftl">
+<#import "login_tmp.ftl" as l>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Electro</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -11,14 +13,20 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/main">Messages</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/users">User list</a>
-            </li>
-        </ul>
 
-        <div class="navbar-text">${name}</div>
+            <#if isAdmin>
+                <li class="nav-item">
+                    <a class="nav-link" href="/users">User list</a>
+                </li>
+            </#if>
+        </ul>
+        <#if known>
+            <@l.logout/>
+        </#if>
+        <div class="navbar-text mx-3">${name}</div>
     </div>
 </nav>

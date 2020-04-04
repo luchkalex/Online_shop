@@ -2,7 +2,6 @@
 <#import "parts/login_tmp.ftl" as l>
 
 <@c.page>
-    Login page
-    <@l.login "/login"/>
-    <a href="/registration">Add new user</a>
+    <h4 class="text-sm-center">Login page</h4>
+    <@l.login "/login" false/>
 </@c.page>
