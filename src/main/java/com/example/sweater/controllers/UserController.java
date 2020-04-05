@@ -75,7 +75,7 @@ public class UserController {
 
         userService.editUser(user, username, password, email);
 
-        return "profile";
+        return "redirect:/";
     }
 
 }

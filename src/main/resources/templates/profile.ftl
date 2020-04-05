@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-    <h5>${username}</h5>
+    <h5>${username!"username"}</h5>
 
     <form method="post" novalidate>
         <div class="form-group">

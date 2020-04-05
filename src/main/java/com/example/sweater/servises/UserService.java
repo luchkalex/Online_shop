@@ -119,6 +119,9 @@ public class UserService implements UserDetailsService {
             user.setPassword(password);
         }
 
+        if (!StringUtils.isEmpty(username)) {
+            user.setUsername(username);
+        }
         userRepo.save(user);
     }
 }
