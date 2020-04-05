@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -16,10 +18,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "Username can't be empty!")
     private String username;
+
+    @NotBlank(message = "Password can't be empty!")
     private String password;
+
+    /*Transient says to hibernate not to add this field to db*/
+    @Transient
+    private String conf_password;
+
     private boolean active;
+
+    @Email(message = "Email is not correct!")
+    @NotBlank(message = "Email can't be empty!")
     private String email;
+
     private String activationCode;
 
     /*@ElementCollection - We use @ElementCollection annotation to declare an element-collection
@@ -124,5 +139,13 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getConf_password() {
+        return conf_password;
+    }
+
+    public void setConf_password(String conf_password) {
+        this.conf_password = conf_password;
     }
 }
