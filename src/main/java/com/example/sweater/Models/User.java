@@ -25,10 +25,6 @@ public class User implements UserDetails {
     @NotBlank(message = "Password can't be empty!")
     private String password;
 
-    /*Transient says to hibernate not to add this field to db*/
-    @Transient
-    private String conf_password;
-
     private boolean active;
 
     @Email(message = "Email is not correct!")
@@ -141,11 +137,4 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public String getConf_password() {
-        return conf_password;
-    }
-
-    public void setConf_password(String conf_password) {
-        this.conf_password = conf_password;
-    }
 }

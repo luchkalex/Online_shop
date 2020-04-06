@@ -4,10 +4,12 @@ import com.example.sweater.Models.User;
 import com.example.sweater.servises.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -27,13 +29,23 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
+    public String addUser(
+            @RequestParam String conf_password,
+            @Valid User user,
+            BindingResult bindingResult,
+            Model model) {
 
-        if (user.getPassword() != null && !user.getPassword().equals(user.getConf_password())) {
+        boolean isConfirmEmpty = StringUtils.isEmpty(conf_password);
+
+        if (isConfirmEmpty) {
+            model.addAttribute("conf_passwordError", "Confirmation password can't be empty");
+        }
+
+        if (user.getPassword() != null && !user.getPassword().equals(conf_password)) {
             model.addAttribute("passwordError", "Passwords are different");
         }
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || isConfirmEmpty) {
             Map<String, String> errors = ControllerUtil.getErrors(bindingResult);
             model.mergeAttributes(errors);
             return "registration";
@@ -54,9 +66,12 @@ public class RegistrationController {
         boolean isActivated = userService.activateUser(code);
 
         if (isActivated) {
+            model.addAttribute("messageType", "success");
             model.addAttribute("message", "User successful activated");
-        } else
+        } else {
+            model.addAttribute("messageType", "danger");
             model.addAttribute("message", "Activation code is not found");
+        }
 
         return "login";
     }
