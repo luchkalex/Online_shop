@@ -1,4 +1,4 @@
-package com.example.sweater.Models;
+package ua.electro.models;
 
 import javax.persistence.*;
 

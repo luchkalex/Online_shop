@@ -1,11 +1,11 @@
-package com.example.sweater.controllers;
+package ua.electro.controllers;
 
-import com.example.sweater.Models.Category;
-import com.example.sweater.servises.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ua.electro.models.Category;
+import ua.electro.servises.CategoryService;
 
 import java.util.List;
 

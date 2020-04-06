@@ -1,6 +1,5 @@
-package com.example.sweater.config;
+package ua.electro.config;
 
-import com.example.sweater.servises.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ua.electro.servises.UserService;
 
 /*Class that configure security layer on startup*/
 
@@ -24,6 +24,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(8);
     }
 
+    /**
+     * Autowired used here because of circle definition in class
+     *
+     * @see UserService
+     */
     @Autowired
     private UserService userService;
 
@@ -41,8 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .rememberMe()
                 .and()
                     .logout()
                     .permitAll();

@@ -17,8 +17,9 @@
     <div class="collapse <#if message??>show</#if>" id="inputCollapse">
         <div class="form-group">
             <form method="post" enctype="multipart/form-data">
+                <label for="message_text">Message</label>
                 <input type="text" name="text" class="form-control ${(textError??)?string('is-invalid', '')} my-1"
-                       value="<#if message??>${message.text}</#if>" placeholder="Введите сообщение"/>
+                       value="<#if message??>${message.text}</#if>" placeholder="Введите сообщение" id="message_text"/>
 
                 <#if textError??>
                     <div class="invalid-feedback">
@@ -26,8 +27,9 @@
                     </div>
                 </#if>
 
+                <label for="tag">Message</label>
                 <input type="text" name="tag" class="form-control ${(tagError??)?string('is-invalid', '')} my-1"
-                       placeholder="Тэг"
+                       placeholder="Тэг" id="tag"
                        value="<#if message??>${message.tag}</#if>">
                 <#if tagError??>
                     <div class="invalid-feedback">

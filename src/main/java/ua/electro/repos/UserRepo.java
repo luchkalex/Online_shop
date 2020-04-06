@@ -1,7 +1,7 @@
-package com.example.sweater.repos;
+package ua.electro.repos;
 
-import com.example.sweater.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ua.electro.models.User;
 
 public interface UserRepo extends JpaRepository<User, Long> {
     User findByUsername(String username);

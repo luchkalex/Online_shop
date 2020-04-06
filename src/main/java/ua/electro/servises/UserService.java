@@ -1,14 +1,14 @@
-package com.example.sweater.servises;
+package ua.electro.servises;
 
-import com.example.sweater.Models.Role;
-import com.example.sweater.Models.User;
-import com.example.sweater.repos.UserRepo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import ua.electro.models.Role;
+import ua.electro.models.User;
+import ua.electro.repos.UserRepo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +61,8 @@ public class UserService implements UserDetailsService {
 
             String message = String.format(
                     "Hello %s\n" +
-                            "Welcome please visit : http:/localhost:8080/activate/%s",
+                            "Welcome please visit : \n" +
+                            "http://localhost:8080/activate/%s",
                     user.getUsername(),
                     user.getActivationCode());
 

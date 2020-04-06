@@ -1,4 +1,4 @@
-package com.example.sweater.servises;
+package ua.electro.servises;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

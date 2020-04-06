@@ -1,8 +1,8 @@
-package com.example.sweater.repos;
+package ua.electro.repos;
 
-import com.example.sweater.Models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ua.electro.models.Category;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {

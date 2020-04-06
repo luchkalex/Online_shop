@@ -1,4 +1,4 @@
-package com.example.sweater.config;
+package ua.electro.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

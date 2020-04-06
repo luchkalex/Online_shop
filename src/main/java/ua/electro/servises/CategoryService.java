@@ -1,9 +1,9 @@
-package com.example.sweater.servises;
+package ua.electro.servises;
 
 
-import com.example.sweater.Models.Category;
-import com.example.sweater.repos.CategoryRepo;
 import org.springframework.stereotype.Service;
+import ua.electro.models.Category;
+import ua.electro.repos.CategoryRepo;
 
 import java.util.List;
 

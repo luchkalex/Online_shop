@@ -1,13 +1,13 @@
-package com.example.sweater.controllers;
+package ua.electro.controllers;
 
-import com.example.sweater.Models.Role;
-import com.example.sweater.Models.User;
-import com.example.sweater.servises.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ua.electro.models.Role;
+import ua.electro.models.User;
+import ua.electro.servises.UserService;
 
 import java.util.Map;
 /*This controller made for user management*/

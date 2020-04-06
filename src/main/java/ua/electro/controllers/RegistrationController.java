@@ -1,7 +1,5 @@
-package com.example.sweater.controllers;
+package ua.electro.controllers;
 
-import com.example.sweater.Models.User;
-import com.example.sweater.servises.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -10,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ua.electro.models.User;
+import ua.electro.servises.UserService;
 
 import javax.validation.Valid;
 import java.util.Map;

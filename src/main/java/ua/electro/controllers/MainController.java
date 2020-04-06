@@ -1,8 +1,5 @@
-package com.example.sweater.controllers;
+package ua.electro.controllers;
 
-import com.example.sweater.Models.Message;
-import com.example.sweater.Models.User;
-import com.example.sweater.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -12,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import ua.electro.models.Message;
+import ua.electro.models.User;
+import ua.electro.repos.MessageRepo;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -35,14 +35,14 @@ public class MainController {
     private String uploadPath;
 
     @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
+    public String greeting() {
         return "greeting";
     }
 
 
     @GetMapping("/main")
     public String main(@RequestParam(required = false) String filter, Model model) {
-        Iterable<Message> messages = messageRepo.findAll();
+        Iterable<Message> messages;
 
         if (filter != null && !filter.isEmpty()) {
             messages = messageRepo.findByTag(filter);

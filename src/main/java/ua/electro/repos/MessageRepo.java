@@ -1,7 +1,7 @@
-package com.example.sweater.repos;
+package ua.electro.repos;
 
-import com.example.sweater.Models.Message;
 import org.springframework.data.repository.CrudRepository;
+import ua.electro.models.Message;
 
 import java.util.List;
 
