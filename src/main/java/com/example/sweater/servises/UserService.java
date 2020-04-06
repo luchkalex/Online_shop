@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void editUser(User user, String username, String password, String email) {
-        /*FIXME: Wrong password encode*/
+
         boolean isEmailChanged = (email != null && !email.equals(user.getEmail()))
                 || (user.getEmail() != null && !user.getEmail().equals(email));
 
@@ -124,7 +124,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (!StringUtils.isEmpty(password)) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(password));
         }
 
         if (!StringUtils.isEmpty(username)) {

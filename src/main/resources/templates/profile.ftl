@@ -1,13 +1,14 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-    <h5>${username!"username"}</h5>
+    <h3>Profile</h3>
+    <h4>${username!"username"}</h4>
 
     <form method="post" novalidate>
         <div class="form-group">
             <label for="username_input">User name</label>
             <input type="text" class="form-control col-sm-4" name="username" id="username_input"
-                   placeholder="User name">
+                   placeholder="User name" value="${username!''}">
         </div>
         <div class="form-group">
             <label for="password_input">Password</label>
