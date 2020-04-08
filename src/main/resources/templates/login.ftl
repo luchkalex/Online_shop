@@ -4,8 +4,6 @@
 <@c.page>
     <h4 class="text-sm-center">Login page</h4>
 
-<#-- FIXME: Message "Bad credentials" shows after registration and link with code activation-->
-
     <#if message??>
         <div class="alert alert-${messageType}">
             ${message}
