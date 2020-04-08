@@ -26,10 +26,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/users/profile">Profile</a>
                 </li>
-            <#else>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li>
             </#if>
 
             <#if isAdmin>
@@ -41,7 +37,11 @@
         </ul>
         <#if known>
             <@l.logout/>
+        <#else>
+            <li class="nav-item">
+                <a class="nav-link btn btn-primary" href="/login">Login</a>
+            </li>
         </#if>
-        <div class="navbar-text mx-3">${name}</div>
+        <div class="navbar-text mx-3"><#if user??>${name}<#else>Please log in</#if></div>
     </div>
 </nav>
