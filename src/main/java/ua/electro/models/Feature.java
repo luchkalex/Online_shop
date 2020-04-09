@@ -1,23 +1,23 @@
 package ua.electro.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
-/*Categories of products*/
 @Entity
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
-@ToString(of = {"id", "title"})
-public class Category {
+@AllArgsConstructor
+public class Feature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @NonNull
     private Long id;
 
     @NonNull
@@ -25,13 +25,6 @@ public class Category {
     @NotBlank(message = "Title can't be empty!")
     private String title;
 
-    @NonNull
-    private boolean active;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Product> products;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "feature", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<FeaturesOfCategory> featuresOfCategory;
-
 }

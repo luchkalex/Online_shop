@@ -28,9 +28,17 @@
                 </li>
             </#if>
 
+            <li class="nav-item">
+                <a class="nav-link" href="/products/catalog">Catalog</a>
+            </li>
+
             <#if isAdmin>
                 <li class="nav-item">
                     <a class="nav-link" href="/users">User list</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="products/add_product">Add product</a>
                 </li>
             </#if>
 

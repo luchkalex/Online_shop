@@ -12,7 +12,7 @@
             </div>
 
             <div class="card-footer text-muted">
-                <a href="/users-messages/${message.author.id}"><strong>${message.authorName}</strong></a>
+                <a href="/users-messages/${message.author.id}"><strong>${message.author.username}</strong></a>
                 <#if message.author.id == currentUserId>
                     <a href="/users-messages/${message.author.id}/?message=${message.id}"
                        class="btn btn-primary">Edit</a>

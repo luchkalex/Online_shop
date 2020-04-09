@@ -1,5 +1,7 @@
 package ua.electro.models;
 
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,41 +10,68 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /*TODO: Add description for Annotations*/
 
+
 @Entity
-@Table(name = "user")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = {"id", "username"})
 public class User implements UserDetails {
+
+    static final long serialVersionUID = -3249357386608006686L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NonNull
     private Long id;
 
+    @NonNull
+    @Length(max = 45, message = "Username is too long (max - 45 symbols)")
     @NotBlank(message = "Username can't be empty!")
     private String username;
 
+
+    @NonNull
+    @Length(max = 45, message = "Password is too long (max - 45 symbols)")
     @NotBlank(message = "Password can't be empty!")
     private String password;
 
-    private boolean active;
 
+    @NonNull
     @Email(message = "Email is not correct!")
     @NotBlank(message = "Email can't be empty!")
     private String email;
 
+
+    private String address;
+
+    private boolean active;
+
     private String activationCode;
+
+    /*TODO: Make validator of phone*/
+    @Length(max = 13, message = "Password is too long (max - 13 symbols)")
+    private String phone;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Message> messages;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Order> orders;
 
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
             joinColumns = {@JoinColumn(name = "channel_id")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
+            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")
+            }
     )
     private Set<User> subscribers = new HashSet<>();
 
@@ -53,6 +82,24 @@ public class User implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "channel_id")}
     )
     private Set<User> subscriptions = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist_items",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "product_id")
+            }
+    )
+    private Set<Product> wishlist_products = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "cart_items",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "product_id")
+            }
+    )
+    private Set<Product> products_users = new HashSet<>();
 
     /*@ElementCollection - We use @ElementCollection annotation to declare an element-collection
         mapping. All the records of the collection are stored in a separate table.
@@ -98,102 +145,8 @@ public class User implements UserDetails {
         return getRoles();
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String mail) {
-        this.email = mail;
-    }
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Set<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(Set<Message> messages) {
-        this.messages = messages;
-    }
-
-    public Set<User> getSubscribers() {
-        return subscribers;
-    }
-
-    public void setSubscribers(Set<User> subscribers) {
-        this.subscribers = subscribers;
-    }
-
-    public Set<User> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(Set<User> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-
 }

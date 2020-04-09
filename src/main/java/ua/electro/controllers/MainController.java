@@ -1,5 +1,6 @@
 package ua.electro.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Controller
+@Slf4j
 public class MainController {
 
     private final MessageRepo messageRepo;
@@ -56,6 +58,7 @@ public class MainController {
         model.addAttribute("messages", messages);
         model.addAttribute("filter", filter);
 
+        messages.forEach(msg -> log.debug("Have message {}", msg.toString()));
         return "main";
     }
 
@@ -85,7 +88,6 @@ public class MainController {
         Iterable<Message> messages = messageRepo.findAll();
 
         model.addAttribute("messages", messages);
-
 
         return "main";
     }

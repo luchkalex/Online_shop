@@ -13,24 +13,23 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class ValueOfFeature {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NonNull
-    @NotBlank(message = "Message can't be empty!")
-    @Length(max = 2048, message = "Message is too long more than 2kB")
-    private String text;
-
-    @NonNull
-    @Length(max = 255, message = "Tag is too long more than 255 characters")
-    private String tag;
+    @Length(max = 45, message = "Title is too long (max - 45 symbols)")
+    @NotBlank(message = "Title can't be empty!")
+    private String title;
 
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User author;
+    @JoinColumn(name = "feature_id")
+    private FeaturesOfCategory feature;
 
-    private String filename;
+    @NonNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
 }

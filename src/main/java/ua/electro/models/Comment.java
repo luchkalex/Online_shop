@@ -1,9 +1,6 @@
 package ua.electro.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -12,25 +9,27 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-public class Message {
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = {"id", "text"})
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NonNull
     private Long id;
 
     @NonNull
-    @NotBlank(message = "Message can't be empty!")
-    @Length(max = 2048, message = "Message is too long more than 2kB")
+    @Length(max = 800, message = "Description is too long (max - 800 symbols)")
+    @NotBlank(message = "Description can't be empty!")
     private String text;
-
-    @NonNull
-    @Length(max = 255, message = "Tag is too long more than 255 characters")
-    private String tag;
 
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
 
-    private String filename;
+    @NonNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
 }
