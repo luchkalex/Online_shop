@@ -64,7 +64,7 @@ public class User implements UserDetails {
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    private Set<OrderOfProduct> orders;
 
     @ManyToMany
     @JoinTable(

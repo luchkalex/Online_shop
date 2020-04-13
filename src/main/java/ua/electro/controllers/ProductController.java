@@ -46,10 +46,20 @@ public class ProductController {
             Model model) {
 
         val formatter = new SimpleDateFormat("yyyy-mm-dd");
+
+
+        boolean hasErrors = false;
+
         if (!StringUtils.isEmpty(price_value)) {
-            product.setPrice(Integer.parseInt(price_value));
+            try {
+                product.setPrice(Integer.parseInt(price_value));
+            } catch (NumberFormatException e) {
+                model.addAttribute("priceError", "Price can't be text");
+                hasErrors = true;
+            }
         } else {
             model.addAttribute("priceError", "Price can't be empty");
+            hasErrors = true;
         }
 
         try {
@@ -57,9 +67,10 @@ public class ProductController {
             product.setRelease_date(release_date);
         } catch (ParseException e) {
             model.addAttribute("release_dateError", "Wrong date");
+            hasErrors = true;
         }
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || hasErrors) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
             model.mergeAttributes(errorMap);
             model.addAttribute("product", product);

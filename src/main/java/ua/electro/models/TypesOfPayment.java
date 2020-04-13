@@ -22,5 +22,5 @@ public class TypesOfPayment {
     private String title;
 
     @OneToMany(mappedBy = "typeOfPayment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    private Set<OrderOfProduct> orders;
 }

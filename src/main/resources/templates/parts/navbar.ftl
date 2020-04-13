@@ -38,7 +38,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="products/add_product">Add product</a>
+                    <a class="nav-link" href="/products/add_product">Add product</a>
                 </li>
             </#if>
 

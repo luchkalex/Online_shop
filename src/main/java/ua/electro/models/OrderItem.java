@@ -20,7 +20,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private OrderOfProduct order;
 
     private int quantity;
 }

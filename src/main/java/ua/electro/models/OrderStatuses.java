@@ -23,6 +23,6 @@ public class OrderStatuses {
     private String title;
 
     @OneToMany(mappedBy = "orderStatuses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Order> orders;
+    private Set<OrderOfProduct> orders;
 
 }
