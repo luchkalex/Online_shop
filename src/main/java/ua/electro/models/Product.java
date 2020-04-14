@@ -20,6 +20,27 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    public Product(Product product, Long quantity) {
+        this.id = product.id;
+        this.title = product.title;
+        this.description = product.description;
+        this.price = product.price;
+        this.discount = product.discount;
+        this.rating = product.rating;
+        this.popularity = product.popularity;
+        this.photo = product.photo;
+        this.quantity = quantity;
+        this.release_date = product.release_date;
+        this.category = product.category;
+        this.productStatus = product.productStatus;
+        this.outcomes = product.outcomes;
+        this.incomes = product.incomes;
+        this.priceHistories = product.priceHistories;
+        this.valuesOfFeatures = product.valuesOfFeatures;
+        this.wishlist_users = product.wishlist_users;
+        this.cart_users = product.cart_users;
+    }
+
     @NonNull
     @Length(max = 45, message = "Title is too long (max - 45 symbols)")
     @NotBlank(message = "Title can't be empty!")
@@ -39,6 +60,9 @@ public class Product {
     private float popularity;
 
     private String photo;
+
+    @Transient
+    private Long quantity;
 
     //    @NonNull
     @Temporal(TemporalType.DATE)

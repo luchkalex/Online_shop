@@ -40,6 +40,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/products/add_product">Add product</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/control_panel/products">Control panel</a>
+                </li>
             </#if>
 
         </ul>

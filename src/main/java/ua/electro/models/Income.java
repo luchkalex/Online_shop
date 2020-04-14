@@ -18,7 +18,7 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int quantity;
+    private Long quantity;
 
     @NonNull
     @Temporal(TemporalType.DATE)
