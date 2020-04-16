@@ -27,7 +27,11 @@ public class CategoryService {
         return cat;
     }
 
-    public void save(Category category){
+    public List<Category> findAll() {
+        return categoryRepo.findAll();
+    }
+
+    public void save(Category category) {
         categoryRepo.save(category);
     }
 

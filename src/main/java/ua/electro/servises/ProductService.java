@@ -28,4 +28,64 @@ public class ProductService {
 
         return productRepo.findAll();
     }
+
+    /*FIXME: It is very bad practice*/
+    public List<Product> findWithFilter(ProductFilter productFilter) {
+        if (productFilter.getCategory() == null && productFilter.getProductStatus() == null) {
+            return productRepo.findWithFilter(
+                    productFilter.getIdMin(),
+                    productFilter.getIdMax(),
+                    productFilter.getTitle(),
+                    productFilter.getPriceMin(),
+                    productFilter.getPriceMax(),
+                    productFilter.getQuantityMin(),
+                    productFilter.getQuantityMax()
+            );
+        } else if (productFilter.getCategory() == null && productFilter.getProductStatus() != null) {
+            return productRepo.findWithFilterStatus(
+                    productFilter.getIdMin(),
+                    productFilter.getIdMax(),
+                    productFilter.getTitle(),
+                    productFilter.getPriceMin(),
+                    productFilter.getPriceMax(),
+                    productFilter.getQuantityMin(),
+                    productFilter.getQuantityMax(),
+                    productFilter.getProductStatus().getId()
+            );
+        } else if (productFilter.getProductStatus() == null && productFilter.getCategory() != null) {
+            return productRepo.findWithFilterCategory(
+                    productFilter.getIdMin(),
+                    productFilter.getIdMax(),
+                    productFilter.getTitle(),
+                    productFilter.getPriceMin(),
+                    productFilter.getPriceMax(),
+                    productFilter.getQuantityMin(),
+                    productFilter.getQuantityMax(),
+                    productFilter.getCategory().getId()
+            );
+        } else {
+            return productRepo.findWithFilterCategoryAndStatus(
+                    productFilter.getIdMin(),
+                    productFilter.getIdMax(),
+                    productFilter.getTitle(),
+                    productFilter.getPriceMin(),
+                    productFilter.getPriceMax(),
+                    productFilter.getQuantityMin(),
+                    productFilter.getQuantityMax(),
+                    productFilter.getCategory().getId(),
+                    productFilter.getProductStatus().getId());
+        }
+    }
+
+    public Long findMaxId() {
+        return productRepo.findOneByMaxId();
+    }
+
+    public Integer findMaxPrice() {
+        return productRepo.findMaxPrice();
+    }
+
+    public Long findMaxQuantity() {
+        return productRepo.findMaxQuantity();
+    }
 }

@@ -73,7 +73,7 @@ public class Product {
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "productStatus_id")
+    @JoinColumn(name = "product_status_id")
     private ProductStatuses productStatus;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

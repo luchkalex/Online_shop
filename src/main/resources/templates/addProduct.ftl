@@ -2,7 +2,7 @@
 
 <@c.page>
     <div class="form-group">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
 
             <label for="product_title" class="mt-2">Title</label>
             <input type="text" name="title"
@@ -48,6 +48,23 @@
                     ${release_dateError}
                 </div>
             </#if>
+
+            <div class="custom-file mt-2 col-sm-4">
+                <input type="file" class="custom-file-input" id="customFile" name="file">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+
+            <#--TODO: Add file error-->
+
+            <input type="hidden" name="productStatus" value="1">
+            <#--            <input type="hidden" name="category" value="1">-->
+
+            <label for="category_select"></label>
+            <select class="custom-select" id="category_select" name="category">
+                <#list categories as category>
+                    <option value=${category.id}>${category.title}</option>
+                </#list>
+            </select>
 
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit" class="btn btn-primary my-1">Save</button>

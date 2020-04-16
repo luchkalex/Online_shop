@@ -16,6 +16,7 @@ public class ProductStatuses {
     //    NOT_AVAILABLE, IN_STOCK, PRE_ORDER, NEW, DELETED
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NonNull
     private Long id;
 
     @NonNull

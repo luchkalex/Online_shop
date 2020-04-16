@@ -15,6 +15,7 @@
               crossorigin="anonymous">
 
         <link rel="stylesheet" href="/static/style.css">
+        <script src="https://kit.fontawesome.com/2f81db4535.js" crossorigin="anonymous"></script>
     </head>
     <body>
 

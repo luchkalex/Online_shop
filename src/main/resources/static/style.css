@@ -155,10 +155,15 @@ a.article:hover {
 }
 
 th {
-    border-bottom: solid orangered 3px;
+    border-bottom: solid orangered 3px !important;
 
 }
 
 td {
     border-bottom: solid gray 1px;
+}
+
+.avatar-img {
+    width: 50px;
+    height: 50px;
 }

@@ -17,12 +17,9 @@ import ua.electro.models.User;
 import ua.electro.repos.MessageRepo;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Controller
 @Slf4j
@@ -51,6 +48,7 @@ public class MainController {
 
         if (filter != null && !filter.isEmpty()) {
             messages = messageRepo.findByTag(filter);
+
         } else {
             messages = messageRepo.findAll();
         }
@@ -80,7 +78,6 @@ public class MainController {
             model.addAttribute("message", message);
         } else {
             saveFile(message, file);
-
             model.addAttribute("message", null);
             messageRepo.save(message);
 
@@ -93,23 +90,23 @@ public class MainController {
     }
 
     private void saveFile(@Valid Message message, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                if (uploadDir.mkdir()) {
-                    System.out.println("MkDir OK");
-                }
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-
-            message.setFilename(resultFileName);
-        }
+//        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+//            File uploadDir = new File(uploadPath);
+//
+//            if (!uploadDir.exists()) {
+//                if (uploadDir.mkdir()) {
+//                    System.out.println("MkDir OK");
+//                }
+//            }
+//
+//            String uuidFile = UUID.randomUUID().toString();
+//
+//            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+//
+//            file.transferTo(new File(uploadPath + "/" + resultFileName));
+//
+//            message.setFilename(resultFileName);
+//        }
     }
 
     @GetMapping("/users-messages/{user}")
