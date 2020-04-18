@@ -1,7 +1,6 @@
 <#import "parts/common.ftl" as c>
 <#import "parts/sidebar.ftl" as s>
 
-
 <@c.page>
     <@s.sidebar>
         <div class="container-fluid ml-5">
@@ -10,11 +9,13 @@
 
                 <h3>Products</h3>
 
-                <button type="button" id="sidebarCollapse" class="btn btn-info ml-auto">
-                    <i class="fas fa-plus-circle"></i><span class="ml-2">New product</span>
-                </button>
+                <a href="/products/add_product" class="btn btn-info ml-auto">
+                    <i class="fas fa-plus-circle"></i>
+                    <span class="ml-2">New product</span>
+                </a>
             </nav>
 
+            <div><#if result??>result</#if></div>
 
             <div class="line"></div>
 
@@ -44,15 +45,12 @@
                             </td>
 
                             <td>
-                                <#--TODO: Create select input-->
-                                <#--                                <label for="category_select"></label>-->
                                 <select class="custom-select" id="category_select" name="category">
-                                    <option value='-1'>Chose category</option>
+                                    <option value=''>Chose category</option>
                                     <#list categories as category>
                                         <option value=${category.id}>${category.title}</option>
                                     </#list>
                                 </select>
-                                <#--<input type="text" placeholder="Search category"class="col-lg">-->
                             </td>
                             <td class="text-center">
                                 <input type="text" value="${pf.priceMin}" placeholder="min" name="priceMin"
@@ -68,15 +66,12 @@
                             </td>
 
                             <td>
-                                <#--TODO: Create select input-->
-                                <#--                                <label for="statuses_select"></label>-->
                                 <select class="custom-select" id="statuses_select" name="productStatus">
                                     <option value='-1'>Chose status</option>
                                     <#list statuses as status>
                                         <option value=${status.id}>${status.title}</option>
                                     </#list>
                                 </select>
-                                <#--<input type="text" class="col-sm-5">-->
                             </td>
                             <td>
                                 <input type="submit" class="btn btn-info" value="Search">
@@ -97,7 +92,23 @@
                                 <td class="text-center">${product.price}</td>
                                 <td class="text-center">${product.quantity ! 0}</td>
                                 <td>${product.productStatus.title}</td>
-                                <td><a href="/products/edit/${product.id}"><i class="fas fa-edit"></i></a></td>
+                                <td>
+                                    <a href="/products/edit/${product.id}"><i class="fas fa-edit"></i></a>
+                                    <a data-toggle="collapse" href="#quantityInput${product.id}" role="button"
+                                       aria-expanded="false" aria-controls="collapseExample"><i
+                                                class="fas fa-plus-circle" style="color: green"></i></a>
+                                    <a href="/products/delete/${product.id}"><i class="fas fa-minus-circle"
+                                                                                style="color: red"></i></a>
+
+                                    <#--FIXME: First product in list haven't form element-->
+                                    <div class="collapse" id="quantityInput${product.id}">
+                                        <form action="/products/income/${product.id}">
+                                            <input type="text" class="form-control-sm col-sm-5" name="quantity">
+                                            <input type="submit" class="btn btn-info" value="Add">
+                                        </form>
+                                    </div>
+
+                                </td>
                             </tr>
                         <#else >
                             <tr>

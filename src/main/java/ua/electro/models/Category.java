@@ -1,28 +1,40 @@
 package ua.electro.models;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /*Categories of products*/
 @Entity
 @Data
 @NoArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 public class Category {
+
+    public Category(Category category) {
+        this.id = category.id;
+        this.title = category.title;
+        this.active = category.active;
+        this.products = category.products;
+        this.featuresOfCategory = category.featuresOfCategory;
+    }
 
     /*FIXME: Category.ID Integer -> Long (Controller get from form Integer can't parse into Long)*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NonNull
-    private Integer id;
+    private Long id;
 
     @NonNull
+    @UniqueElements
     @Length(max = 45, message = "Title is too long (max - 45 symbols)")
+    @NotNull(message = "Title can't be empty (null)")
     @NotBlank(message = "Title can't be empty!")
     private String title;
 

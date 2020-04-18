@@ -3,6 +3,7 @@ package ua.electro.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,13 +12,14 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "order_of_product")
 public class OrderOfProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "orderStatuses_id")
+    @JoinColumn(name = "order_status_id")
     private OrderStatuses orderStatuses;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -32,7 +34,8 @@ public class OrderOfProduct {
     private Set<OrderItem> orderItems;
 
     @NonNull
-    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 
 

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -19,6 +20,7 @@ public class TypesOfPayment {
     private Long id;
 
     @NonNull
+    @NotNull(message = "Title can't be empty")
     private String title;
 
     @OneToMany(mappedBy = "typeOfPayment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -26,8 +26,10 @@ public class ControlPanelController {
         this.statusesService = statusesService;
     }
 
+    /*TODO: Add validation on Number format (max and min values)*/
+    /*FIXME: App failed on Filtering by category*/
     @GetMapping("/products")
-    public String addProduct(
+    public String getProducts(
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
@@ -47,7 +49,6 @@ public class ControlPanelController {
             productFilter.setQuantityMax(productService.findMaxQuantity());
         }
 
-        System.out.println(productFilter.getPriceMax().toString());
         model.addAttribute("pf", productFilter);
 
         return "products_panel";

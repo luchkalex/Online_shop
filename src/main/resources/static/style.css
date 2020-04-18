@@ -65,7 +65,7 @@ a:focus {
 }
 
 #sidebar ul.components {
-    padding: 20px 0px;
+    padding: 20px 0;
     border-bottom: 1px solid #2b292b;
 }
 
@@ -140,13 +140,13 @@ a.article:hover {
     transition: all 0.3s;
 }
 
-@media (maz-width: 768px) {
+@media (max-width: 768px) {
     #sidebar {
         margin-left: -250px;
     }
 
     #sidebar.active {
-        margin-left: 0px;
+        margin-left: 0;
     }
 
     #sidebarCollapse span {
@@ -166,4 +166,19 @@ td {
 .avatar-img {
     width: 50px;
     height: 50px;
+}
+
+.product-image {
+    object-fit: cover;
+    height: 250px;
+    width: 100%;
+}
+
+.container-1300 {
+    max-width: 1300px;
+    /*width: 100%;*/
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
 }

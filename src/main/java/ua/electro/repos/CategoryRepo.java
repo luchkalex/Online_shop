@@ -6,8 +6,7 @@ import ua.electro.models.Category;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
-//    @Query(value = "SELECT c FROM Category c WHERE c.name LIKE '%' || :keyword || '%'"
-//            + " OR c.email LIKE '%' || :keyword || '%'"
-//            + " OR c.address LIKE '%' || :keyword || '%'")
-//    List<Category> search(@Param("keyword") String keyword);
+
+    Category findOneById(Long category_id);
+
 }

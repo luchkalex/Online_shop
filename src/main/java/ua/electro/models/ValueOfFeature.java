@@ -13,7 +13,9 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "value_of_feature")
 public class ValueOfFeature {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

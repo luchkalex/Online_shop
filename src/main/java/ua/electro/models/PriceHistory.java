@@ -12,7 +12,9 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "price_history")
 public class PriceHistory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -21,6 +23,7 @@ public class PriceHistory {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
+
 
     private int price;
 

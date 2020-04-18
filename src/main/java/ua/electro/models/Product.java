@@ -2,9 +2,11 @@ package ua.electro.models;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +21,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public Product(Long id) {
+        this.id = id;
+    }
 
     public Product(Product product, Long quantity) {
         this.id = product.id;
@@ -51,7 +57,9 @@ public class Product {
     @NotBlank(message = "Description can't be empty!")
     private String description;
 
-    private int price;
+    //    @Pattern(regexp = "\\d{1,6}", message = "Wrong price")
+    @NotNull(message = "Price can't be empty")
+    private Integer price;
 
     private int discount;
 
@@ -65,6 +73,7 @@ public class Product {
     private Long quantity;
 
     //    @NonNull
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Temporal(TemporalType.DATE)
     private Date release_date;
 

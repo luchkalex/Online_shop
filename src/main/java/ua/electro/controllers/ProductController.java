@@ -2,19 +2,15 @@ package ua.electro.controllers;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.electro.models.Category;
+import ua.electro.models.Income;
 import ua.electro.models.Product;
-import ua.electro.models.ProductStatuses;
 import ua.electro.servises.CategoryService;
 import ua.electro.servises.ProductService;
 import ua.electro.servises.StatusesService;
@@ -22,8 +18,6 @@ import ua.electro.servises.StatusesService;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -34,14 +28,20 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
-
-    public ProductController(ProductService productService, StatusesService statusesService, CategoryService categoryService) {
+    public ProductController(ProductService productService, StatusesService statusesService, CategoryService categoryService, MessageSource messageSource) {
         this.productService = productService;
         this.categoryService = categoryService;
     }
 
     @Value("${upload.path}")
     private String uploadPath;
+
+
+
+    /*-----------------------Mapping---------------------------*/
+
+
+    /*-----------------------Add Product---------------------------*/
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/add_product")
@@ -50,60 +50,29 @@ public class ProductController {
         return "addProduct";
     }
 
-
-    /*TODO: Find another way to validate price and date*/
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add_product")
-    public String add(
-            @Valid Product product,
+    public String addProduct(
+            /*Price separated*/
+            @RequestParam("category_id") Integer category_id,
+            @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
-            @RequestParam String date,
-            @RequestParam String price_value,
             @RequestParam("file") MultipartFile file,
-            @RequestParam ProductStatuses productStatus,
-            @RequestParam Category category,
             Model model) throws IOException {
 
-        val formatter = new SimpleDateFormat("yyyy-mm-dd");
+        val category = categoryService.findOneById(Long.valueOf(category_id));
 
-
-        boolean hasErrors = false;
-
-        /*Price date validation on empty*/
-        if (!StringUtils.isEmpty(price_value)) {
-            /*Price date validation on int*/
-            try {
-                product.setPrice(Integer.parseInt(price_value));
-            } catch (NumberFormatException e) {
-                model.addAttribute("priceError", "Price can't be text");
-                hasErrors = true;
-            }
-        } else {
-            model.addAttribute("priceError", "Price can't be empty");
-            hasErrors = true;
-        }
-
-        /*Release date validation*/
-        try {
-            val release_date = formatter.parse(date);
-            product.setRelease_date(release_date);
-        } catch (ParseException e) {
-            model.addAttribute("release_dateError", "Wrong date");
-            hasErrors = true;
-        }
-
-        if (productStatus != null) {
-            product.setProductStatus(productStatus);
-        }
 
         if (category != null) {
             product.setCategory(category);
         }
 
-        if (bindingResult.hasErrors() || hasErrors) {
+        if (bindingResult.hasErrors()) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
+            val categories = categoryService.findAll();
             model.mergeAttributes(errorMap);
             model.addAttribute("product", product);
+            model.addAttribute("categories", categories);
             return "addProduct";
         } else {
 
@@ -113,15 +82,123 @@ public class ProductController {
 
         }
 
-        return "redirect:/";
+        return "redirect:/control_panel/products";
     }
+
+    /*-----------------------Edit Product---------------------------*/
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/edit/{product}")
+    public String editProduct(
+            @PathVariable("product") @ModelAttribute Product product,
+            Model model) {
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("type", "edit");
+        model.addAttribute("product", product);
+        return "addProduct";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/edit/{product_id}")
+    public String editProduct(
+            /*Price separated*/
+            @PathVariable("product_id") Long product_id,
+            @RequestParam("category_id") Integer category_id,
+            @Valid @ModelAttribute("product") Product product,
+            BindingResult bindingResult,
+            /*TODO: Add file validation on (Type, size, ect)*/
+            @RequestParam("file") MultipartFile file,
+            Model model) throws IOException {
+
+        val category = categoryService.findOneById(Long.valueOf(category_id));
+
+        if (Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+            Product prev_product = productService.findOneById(product_id);
+            if (prev_product.getPhoto() != null) {
+                product.setPhoto(prev_product.getPhoto());
+            }
+        }
+
+        if (category != null) {
+            product.setCategory(category);
+        }
+
+        product.setId(product_id);
+
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            val categories = categoryService.findAll();
+            model.mergeAttributes(errorMap);
+            model.addAttribute("categories", categories);
+            model.addAttribute("type", "edit");
+            return "addProduct";
+        } else {
+
+            saveFile(product, file);
+            model.addAttribute("product", null);
+            productService.save(product);
+
+        }
+
+        return "redirect:/control_panel/products";
+    }
+
+    /*-----------------------Delete product---------------------------*/
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/delete/{product_id}")
+    public String deleteProduct(
+            @PathVariable("product_id") Product product,
+            Model model) throws IOException {
+
+        productService.delete(product);
+        model.addAttribute("result", "Product deleted");
+//
+//            model.addAttribute("result", "Product is not deleted");
+//
+
+        return "redirect:/control_panel/products";
+    }
+
+    /*-----------------------Income---------------------------*/
+
+    /*TODO: Add validation on Number format (quantity)*/
+    @GetMapping("/income/{product}")
+    public String addIncome(
+            @PathVariable("product") Long product_id,
+            @Valid @ModelAttribute("income") Income income
+    ) {
+        income.setProduct(new Product(product_id));
+        productService.save(income);
+
+        return "redirect:/control_panel/products";
+    }
+
+
+    /*-----------------------Catalog---------------------------*/
 
     @GetMapping("/catalog")
     public String showCatalog(Model model) {
 
         val products = productService.findAll();
 
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
+
+        return "catalog";
+    }
+
+    @GetMapping("/category/{category_id}")
+    public String getProductOfCategory(
+            @PathVariable("category_id") Integer category_id,
+            Model model) {
+
+        val category = categoryService.findOneById(Long.valueOf(category_id));
+        val products = productService.findByCategory(category);
+
+        model.addAttribute("products", products);
+        model.addAttribute("category", category);
+        model.addAttribute("type", "category");
 
         return "catalog";
     }

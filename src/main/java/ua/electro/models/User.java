@@ -53,8 +53,8 @@ public class User implements UserDetails {
 
     private String activationCode;
 
-    /*TODO: Make validator of phone*/
-    @Length(max = 13, message = "Password is too long (max - 13 symbols)")
+    /*TODO: Make validator of phone Using @Pattern I suppose*/
+    @Length(max = 13, message = "Phone number is too long (max - 13 symbols)")
     private String phone;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

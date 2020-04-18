@@ -1,15 +1,14 @@
 package ua.electro.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Income {
@@ -18,10 +17,11 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NonNull
+    @NotNull(message = "Quantity can't be empty")
     private Long quantity;
 
-    @NonNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date_in;
 
     @NonNull

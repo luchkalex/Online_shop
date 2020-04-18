@@ -58,10 +58,10 @@
             <version>8.0.13</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.flywaydb</groupId>-->
+        <!--            <artifactId>flyway-core</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- security -->
         <dependency>
@@ -90,11 +90,11 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>5.1.4</version>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.flywaydb</groupId>-->
+            <!--                <artifactId>flyway-maven-plugin</artifactId>-->
+            <!--                <version>5.1.4</version>-->
+            <!--            </plugin>-->
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>

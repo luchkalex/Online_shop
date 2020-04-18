@@ -1,9 +1,6 @@
 package ua.electro.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,6 +9,9 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
+@Table(name = "features_of_category")
 public class FeaturesOfCategory {
 
     @Id

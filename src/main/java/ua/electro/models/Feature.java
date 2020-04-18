@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,6 +22,7 @@ public class Feature {
     private Long id;
 
     @NonNull
+    @UniqueElements
     @Length(max = 45, message = "Title is too long (max - 45 symbols)")
     @NotBlank(message = "Title can't be empty!")
     private String title;

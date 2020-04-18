@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -18,7 +19,8 @@ public class Outcome {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int quantity;
+    @NotNull(message = "Quantity can't be empty")
+    private Long quantity;
 
     @NonNull
     @Temporal(TemporalType.DATE)

@@ -36,4 +36,8 @@ public class CategoryService {
     }
 
 
+    public Category findOneById(Long category_id) {
+        return categoryRepo.findOneById(category_id);
+    }
+
 }
