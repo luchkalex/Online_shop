@@ -1,9 +1,6 @@
 package ua.electro.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
@@ -13,6 +10,8 @@ import java.util.Set;
 
 @Entity
 @Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Feature {
@@ -29,4 +28,7 @@ public class Feature {
 
     @OneToMany(mappedBy = "feature", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<FeaturesOfCategory> featuresOfCategory;
+
+    @OneToMany(mappedBy = "feature", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<ValueOfFeature> valuesOfFeature;
 }

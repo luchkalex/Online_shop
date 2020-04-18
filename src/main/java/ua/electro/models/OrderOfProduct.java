@@ -1,8 +1,6 @@
 package ua.electro.models;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -11,6 +9,8 @@ import java.util.Set;
 
 @Entity
 @Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @Table(name = "order_of_product")
 public class OrderOfProduct {

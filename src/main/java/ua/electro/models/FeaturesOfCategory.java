@@ -3,7 +3,6 @@ package ua.electro.models;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Data
@@ -27,7 +26,4 @@ public class FeaturesOfCategory {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @OneToMany(mappedBy = "feature", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<ValueOfFeature> valuesOfFeature;
 }

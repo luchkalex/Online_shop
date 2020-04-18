@@ -9,6 +9,8 @@ import java.util.Date;
 @Entity
 @Data
 @RequiredArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Income {

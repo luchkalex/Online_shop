@@ -46,4 +46,7 @@ public class Category {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<FeaturesOfCategory> featuresOfCategory;
 
+    public Category(Long category_id) {
+        this.id = category_id;
+    }
 }

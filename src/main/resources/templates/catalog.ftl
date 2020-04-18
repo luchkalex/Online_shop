@@ -18,14 +18,17 @@
                 </div>
 
                 <#if type?? && type="category">
-                    <#list category.featuresOfCategory as features_of_category>
-                        <div>
-                            <span>${features_of_category.feature.title}</span>
-                            <div>
-                                <#list features_of_category.valuesOfFeature as value_of_feature>
-                                    <span>${value_of_feature.title}</span>
-                                </#list>
-                            </div>
+                    <#list features_of_cat as foc>
+                        <div class="mt-3 border-bottom">
+                            <span>${foc.feature.title}</span>
+
+                            <#list foc.feature.valuesOfFeature as value_of_feature>
+                                <div class="my-2">
+                                    <input type="checkbox" id="feature_check_box${value_of_feature.id}">
+                                    <label for="feature_check_box${value_of_feature.id}">${value_of_feature.title}</label>
+                                </div>
+                            </#list>
+
                         </div>
                     </#list>
 

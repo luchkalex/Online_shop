@@ -42,7 +42,6 @@ public class Product {
         this.outcomes = product.outcomes;
         this.incomes = product.incomes;
         this.priceHistories = product.priceHistories;
-        this.valuesOfFeatures = product.valuesOfFeatures;
         this.wishlist_users = product.wishlist_users;
         this.cart_users = product.cart_users;
     }
@@ -94,8 +93,6 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PriceHistory> priceHistories;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<ValueOfFeature> valuesOfFeatures;
 
     @ManyToMany
     @JoinTable(

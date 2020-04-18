@@ -2,18 +2,18 @@ package ua.electro.controllers;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ua.electro.models.Category;
 import ua.electro.models.Income;
 import ua.electro.models.Product;
 import ua.electro.servises.CategoryService;
+import ua.electro.servises.FeatureService;
 import ua.electro.servises.ProductService;
-import ua.electro.servises.StatusesService;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -27,10 +27,12 @@ public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final FeatureService featuresService;
 
-    public ProductController(ProductService productService, StatusesService statusesService, CategoryService categoryService, MessageSource messageSource) {
+    public ProductController(ProductService productService, CategoryService categoryService, FeatureService featuresService) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.featuresService = featuresService;
     }
 
     @Value("${upload.path}")
@@ -193,11 +195,12 @@ public class ProductController {
             @PathVariable("category_id") Integer category_id,
             Model model) {
 
-        val category = categoryService.findOneById(Long.valueOf(category_id));
+        val category = new Category(Long.valueOf(category_id));
+        val features = featuresService.findByCategory(category);
         val products = productService.findByCategory(category);
 
         model.addAttribute("products", products);
-        model.addAttribute("category", category);
+        model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
 
         return "catalog";

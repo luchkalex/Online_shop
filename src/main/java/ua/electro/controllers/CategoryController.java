@@ -44,7 +44,7 @@ public class CategoryController {
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    List<Category> getAllCategories(){
+    List<Category> getAllCategories() {
         return categoryService.getListCategories();
     }
 //    public String getAll(){

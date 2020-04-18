@@ -1,9 +1,6 @@
 package ua.electro.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -13,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 @Table(name = "value_of_feature")
 public class ValueOfFeature {
 
@@ -28,10 +27,5 @@ public class ValueOfFeature {
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "feature_id")
-    private FeaturesOfCategory feature;
-
-    @NonNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Feature feature;
 }
