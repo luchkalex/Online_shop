@@ -21,7 +21,7 @@
             <input type="text" name="price"
                    class="form-control ${(priceError??)?string('is-invalid', '')} my-1 col-sm-4"
                    placeholder="Price" id="price"
-                   value="<#if product?? && !priceError??>${product.price}</#if>">
+                   value="<#if product?? && !priceError??>${product.price?string["0"]}</#if>">
             <#if priceError??>
                 <div class="invalid-feedback">
                     ${priceError}

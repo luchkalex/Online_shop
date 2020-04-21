@@ -44,6 +44,7 @@ public class Product {
         this.priceHistories = product.priceHistories;
         this.wishlist_users = product.wishlist_users;
         this.cart_users = product.cart_users;
+        this.valuesOfFeatures = product.valuesOfFeatures;
     }
 
     @NonNull
@@ -111,5 +112,14 @@ public class Product {
             }
     )
     private Set<User> cart_users = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "feature_of_product",
+            joinColumns = {@JoinColumn(name = "product_id")},
+            inverseJoinColumns = {@JoinColumn(name = "feature_id")
+            }
+    )
+    private Set<ValueOfFeature> valuesOfFeatures = new HashSet<>();
 
 }

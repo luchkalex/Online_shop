@@ -33,21 +33,12 @@ public class ControlPanelController {
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
+        productFilter = productService.validate(productFilter);
+
         model.addAttribute("products", productService.findWithFilter(productFilter));
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("statuses", statusesService.findAll());
 
-        if (productFilter.getIdMax() == Long.MAX_VALUE) {
-            productFilter.setIdMax(productService.findMaxId());
-        }
-
-        if (productFilter.getPriceMax() == Integer.MAX_VALUE) {
-            productFilter.setPriceMax(productService.findMaxPrice());
-        }
-
-        if (productFilter.getQuantityMax() == Long.MAX_VALUE) {
-            productFilter.setQuantityMax(productService.findMaxQuantity());
-        }
 
         model.addAttribute("pf", productFilter);
 

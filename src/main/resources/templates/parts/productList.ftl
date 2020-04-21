@@ -24,6 +24,17 @@
                 <a href="#"><strong>${product.price - product.discount} hrn</strong></a>
             </div>
 
+            <div class="m-2">
+                <#list product.valuesOfFeatures as valueOfFeature>
+                    <div class="border-bottom">
+                        <span class="text-danger font-weight-bold">${valueOfFeature.feature.title}</span>
+                        <span>${valueOfFeature.title}</span>
+                    </div>
+                <#else>
+
+                </#list>
+            </div>
+
             <div class="card-footer text-muted">
                 <a href="/products/add_to_cart/${product.id}" class="btn btn-primary">Add to cart</a>
             </div>

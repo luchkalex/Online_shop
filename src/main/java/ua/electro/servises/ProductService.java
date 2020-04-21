@@ -7,21 +7,17 @@ import ua.electro.models.Product;
 import ua.electro.repos.IncomeRepo;
 import ua.electro.repos.ProductRepo;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
 public class ProductService {
 
-    private final EntityManager entityManager;
-
     private final ProductRepo productRepo;
 
     private final IncomeRepo incomeRepo;
 
-    public ProductService(ProductRepo productRepo, EntityManager entityManager, IncomeRepo incomeRepo) {
+    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo) {
         this.productRepo = productRepo;
-        this.entityManager = entityManager;
         this.incomeRepo = incomeRepo;
     }
 
@@ -109,5 +105,37 @@ public class ProductService {
 
     public List<Product> findByCategory(Category category) {
         return productRepo.findByCategory(category);
+    }
+
+    public ProductFilter validate(ProductFilter productFilter) {
+        if (productFilter.getPriceMax() == null) {
+            productFilter.setPriceMax(findMaxPrice());
+        }
+
+        if (productFilter.getIdMax() == null) {
+            productFilter.setIdMax(findMaxId());
+        }
+
+        if (productFilter.getQuantityMax() == null) {
+            productFilter.setQuantityMax(findMaxQuantity());
+        }
+
+        if (productFilter.getIdMin() == null) {
+            productFilter.setIdMin(0L);
+        }
+
+        if (productFilter.getQuantityMin() == null) {
+            productFilter.setQuantityMin(0L);
+        }
+
+        if (productFilter.getPriceMin() == null) {
+            productFilter.setPriceMin(0);
+        }
+
+        if (productFilter.getTitle() == null) {
+            productFilter.setTitle("");
+        }
+
+        return productFilter;
     }
 }

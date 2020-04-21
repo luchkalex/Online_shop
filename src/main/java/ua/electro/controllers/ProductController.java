@@ -2,6 +2,7 @@ package ua.electro.controllers;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,13 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 import ua.electro.models.Category;
 import ua.electro.models.Income;
 import ua.electro.models.Product;
+import ua.electro.models.ValueOfFeature;
 import ua.electro.servises.CategoryService;
 import ua.electro.servises.FeatureService;
+import ua.electro.servises.ProductFilter;
 import ua.electro.servises.ProductService;
 
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -151,7 +155,7 @@ public class ProductController {
     @GetMapping("/delete/{product_id}")
     public String deleteProduct(
             @PathVariable("product_id") Product product,
-            Model model) throws IOException {
+            Model model) {
 
         productService.delete(product);
         model.addAttribute("result", "Product deleted");
@@ -165,6 +169,7 @@ public class ProductController {
     /*-----------------------Income---------------------------*/
 
     /*TODO: Add validation on Number format (quantity)*/
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/income/{product}")
     public String addIncome(
             @PathVariable("product") Long product_id,
@@ -180,12 +185,17 @@ public class ProductController {
     /*-----------------------Catalog---------------------------*/
 
     @GetMapping("/catalog")
-    public String showCatalog(Model model) {
+    public String showCatalog(
+            @ModelAttribute("productFilter") ProductFilter productFilter,
+            Model model) {
 
-        val products = productService.findAll();
+        productFilter = productService.validate(productFilter);
+
+        val products = productService.findWithFilter(productFilter);
 
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
+        model.addAttribute("pf", productFilter);
 
         return "catalog";
     }
@@ -193,18 +203,58 @@ public class ProductController {
     @GetMapping("/category/{category_id}")
     public String getProductOfCategory(
             @PathVariable("category_id") Integer category_id,
+            @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
         val category = new Category(Long.valueOf(category_id));
+
         val features = featuresService.findByCategory(category);
-        val products = productService.findByCategory(category);
+
+        productFilter = productService.validate(productFilter);
+
+        val products = productService.findWithFilter(productFilter);
 
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
+        model.addAttribute("cur_category", category);
+        model.addAttribute("pf", productFilter);
 
         return "catalog";
     }
+
+    @PostMapping("/category/{category_id}")
+    public String getProductOfCategory(
+            @PathVariable("category_id") Integer category_id,
+            @RequestParam(required = false) List<Long> features_id,
+            @ModelAttribute("productFilter") ProductFilter productFilter,
+            Model model) {
+
+        val category = new Category(Long.valueOf(category_id));
+
+        productFilter = productService.validate(productFilter);
+
+        productFilter.setCategory(category);
+
+        List<Product> products = productService.findWithFilter(productFilter);
+
+        /*Filtering by features*/
+        if (features_id != null) {
+            features_id.forEach(filter -> {
+                CollectionUtils.filter(products, product -> ((Product) product).getValuesOfFeatures().contains(new ValueOfFeature(filter)));
+            });
+        }
+
+        val features = featuresService.findByCategory(category);
+
+        model.addAttribute("products", products);
+        model.addAttribute("features_of_cat", features);
+        model.addAttribute("type", "category");
+        model.addAttribute("pf", productFilter);
+
+        return "catalog";
+    }
+
 
     private void saveFile(Product product, @RequestParam("file") MultipartFile file) throws IOException {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {

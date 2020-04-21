@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,4 +30,17 @@ public class ValueOfFeature {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "feature_id")
     private Feature feature;
+
+    @ManyToMany
+    @JoinTable(
+            name = "feature_of_product",
+            joinColumns = {@JoinColumn(name = "feature_id")},
+            inverseJoinColumns = {@JoinColumn(name = "product_id")
+            }
+    )
+    private Set<Product> products = new HashSet<>();
+
+    public ValueOfFeature(Long id) {
+        this.id = id;
+    }
 }

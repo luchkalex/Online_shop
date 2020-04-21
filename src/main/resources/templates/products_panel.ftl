@@ -105,6 +105,7 @@
                                         <form action="/products/income/${product.id}">
                                             <input type="text" class="form-control-sm col-sm-5" name="quantity">
                                             <input type="submit" class="btn btn-info" value="Add">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                         </form>
                                     </div>
 
@@ -117,6 +118,7 @@
                         </#list>
                         </tbody>
                     </table>
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 </form>
             </div>
         </div>

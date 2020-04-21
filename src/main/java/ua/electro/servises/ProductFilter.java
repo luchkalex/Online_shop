@@ -21,33 +21,6 @@ public class ProductFilter {
     public ProductFilter(String title, Long idMin, Long idMax, Integer priceMin,
                          Integer priceMax, Long quantityMin, Long quantityMax,
                          Category category, ProductStatuses productStatus) {
-        if (idMax == null) {
-            idMax = Long.MAX_VALUE;
-        }
-
-        if (idMin == null) {
-            idMin = 0L;
-        }
-
-        if (quantityMax == null) {
-            quantityMax = Long.MAX_VALUE;
-        }
-
-        if (quantityMin == null) {
-            quantityMin = 0L;
-        }
-
-        if (priceMax == null) {
-            priceMax = Integer.MAX_VALUE;
-        }
-
-        if (priceMin == null) {
-            priceMin = 0;
-        }
-
-        if (title == null) {
-            title = "";
-        }
 
         this.title = title;
         this.idMin = idMin;
@@ -59,4 +32,5 @@ public class ProductFilter {
         this.category = category;
         this.productStatus = productStatus;
     }
+
 }
