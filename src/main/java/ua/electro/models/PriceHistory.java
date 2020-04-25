@@ -3,6 +3,7 @@ package ua.electro.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "price_history")
-public class PriceHistory {
+public class PriceHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

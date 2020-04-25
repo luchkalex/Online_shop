@@ -6,7 +6,7 @@
             <label for="username_input">User name</label>
             <input type="text" class="form-control ${(usernameError??)?string('is-invalid', '')} col-sm-4"
                    name="username" id="username_input"
-                   value="<#if user??>${user.username}</#if>"
+                   value="<#if user?? && user.id??>${user.username}</#if>"
                    placeholder="User name">
             <#if usernameError??>
                 <div class="invalid-feedback">

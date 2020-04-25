@@ -3,6 +3,7 @@ package ua.electro.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -12,17 +13,17 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderStatuses implements Serializable {
-    //    WAITING, CANCELED, ACCEPTED, DONE
-
+public class TypesOfDelivery implements Serializable {
+    //    PICKUP, COURIER
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NonNull
     private Long id;
 
     @NonNull
+    @NotNull(message = "Title can't be empty")
     private String title;
 
-    @OneToMany(mappedBy = "orderStatuses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "typeOfPayment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<OrderOfProduct> orders;
-
 }

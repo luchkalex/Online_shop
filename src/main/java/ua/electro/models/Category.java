@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 /*Categories of products*/
@@ -15,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString(of = "id")
 @EqualsAndHashCode(of = "id")
-public class Category {
+public class Category implements Serializable {
 
     public Category(Category category) {
         this.id = category.id;

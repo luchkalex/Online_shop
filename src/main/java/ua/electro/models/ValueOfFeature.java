@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @ToString(of = "id")
 @EqualsAndHashCode(of = "id")
 @Table(name = "value_of_feature")
-public class ValueOfFeature {
+public class ValueOfFeature implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

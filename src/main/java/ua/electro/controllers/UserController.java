@@ -5,23 +5,30 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ua.electro.models.Role;
-import ua.electro.models.User;
+import ua.electro.models.*;
+import ua.electro.servises.CartService;
+import ua.electro.servises.OrderService;
 import ua.electro.servises.UserService;
 
+import java.util.Collections;
 import java.util.Map;
 /*This controller made for user management*/
 
 /*PreAuthorize means that you have to have privileges to get access to this methods */
 /*In this case only ADMIN has access to user list and can change it*/
 @Controller
+@SessionAttributes("session_user")
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService;
+    private final CartService cartService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OrderService orderService, CartService cartService) {
         this.userService = userService;
+        this.orderService = orderService;
+        this.cartService = cartService;
     }
 
 
@@ -65,6 +72,133 @@ public class UserController {
         return "profile";
     }
 
+    @GetMapping("/cart")
+    public String getCart(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            Model model) {
+
+        user = userService.getActualUser(user, session_user);
+
+        model.addAttribute("user", user);
+
+        return "cartPage";
+    }
+
+    // FIXME: 4/23/20 In auth user: Edit works but doesn't display changes
+    @GetMapping("editCart")
+    public String getCart(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            @RequestParam("cartItem_id") Long cartItem_id,
+            @RequestParam("quantity") Integer quantity,
+            Model model) {
+
+        user = userService.getActualUser(user, session_user);
+
+        for (CartItem u_cartItem : user.getCartItems()) {
+            if (u_cartItem.getId().equals(cartItem_id)) {
+                u_cartItem.setQuantity(quantity);
+
+                if (user.getId() != null) {
+                    cartService.saveSet(Collections.singleton(u_cartItem));
+                }
+
+//                model.addAttribute("user", user);
+                return "redirect:/users/cart";
+            }
+        }
+
+//        model.addAttribute("user", user);
+        return "redirect:/users/cart";
+    }
+
+    // FIXME: 4/23/20 In auth user: Delete work but doesn't displays
+    @GetMapping("deleteCart/{cartItem_id}")
+    public String deleteCart(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            @PathVariable("cartItem_id") Long cartItem_id,
+            Model model) {
+
+        user = userService.getActualUser(user, session_user);
+
+        for (CartItem u_cartItem : user.getCartItems()) {
+            if (u_cartItem.getId().equals(cartItem_id)) {
+                user.getCartItems().remove(u_cartItem);
+                if (user.getId() != null) {
+                    cartService.deleteOne(u_cartItem);
+                }
+                return "redirect:/users/cart";
+            }
+        }
+
+        return "redirect:/users/cart";
+    }
+
+    @GetMapping("order_maker")
+    public String getOrderPage(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            Model model) {
+
+        // TODO: 4/22/20 Check on empty cart
+        user = userService.getActualUser(user, session_user);
+
+        model.addAttribute("user", user);
+        model.addAttribute("types_of_payment", orderService.findAllTypesOfPayment());
+        model.addAttribute("types_of_delivery", orderService.findAllTypesOfDelivery());
+
+        return "orderPage";
+    }
+
+    // TODO: 4/25/20 When order will be approved and done add to outcome
+    @PostMapping("order_maker")
+    public String makeOrder(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            @ModelAttribute("order") OrderOfProduct order,
+            @RequestParam Long payment_id,
+            @RequestParam Long delivery_id,
+            Model model) {
+
+        user = userService.getActualUser(user, session_user);
+
+        order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
+
+        order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
+
+        order.setTotal(0);
+
+        user.getCartItems().forEach(cartItem -> {
+            order.getOrderItems().add(new OrderItem(
+                    cartItem.getProduct(),
+                    cartItem.getQuantity(),
+                    order
+            ));
+            order.setTotal(order.getTotal() + (cartItem.getQuantity() * cartItem.getProduct().getPrice()));
+        });
+
+        if (user.getId() != null) {
+            order.setUser(user);
+        }
+
+        /*Delete in db*/
+        cartService.deleteSet(user.getCartItems());
+
+        orderService.save(order);
+
+        user.getCartItems().clear();
+
+        user.getOrders().add(order);
+
+        model.addAttribute("user", user);
+        model.addAttribute("order", order);
+
+        return "orderConfirmPage";
+    }
+
+
     @PostMapping("profile")
     public String editProfile(
             @AuthenticationPrincipal User user,
@@ -85,7 +219,7 @@ public class UserController {
 
         userService.subscribe(currentUser, user);
 
-        return "redirect:/users-messages/" + user.getId();
+        return "redirect:/users-messages" + user.getId();
     }
 
     @GetMapping("unsubscribe/{user}")
@@ -95,7 +229,7 @@ public class UserController {
 
         userService.unsubscribe(currentUser, user);
 
-        return "redirect:/users-messages/" + user.getId();
+        return "redirect:/users-messages" + user.getId();
     }
 
     @GetMapping("{type}/{user}/list")
@@ -114,5 +248,11 @@ public class UserController {
 
 
         return "subscriptions";
+    }
+
+    // FIXME: 4/22/20 This method repeated in ProductController
+    @ModelAttribute("session_user")
+    public User createUser() {
+        return new User();
     }
 }

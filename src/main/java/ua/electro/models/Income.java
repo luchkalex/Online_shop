@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -13,7 +14,7 @@ import java.util.Date;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Income {
+public class Income implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

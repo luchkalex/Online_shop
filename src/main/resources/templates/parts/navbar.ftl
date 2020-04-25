@@ -14,7 +14,7 @@
                 <a class="nav-link" href="/">Home</a>
             </li>
 
-            <#if user??>
+            <#if user?? && user.id??>
                 <li class="nav-item">
                     <a class="nav-link" href="/main">Messages</a>
                 </li>
@@ -38,7 +38,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/products/add_product">Add product</a>
+                    <a class="nav-link" href="/products/add_product_choice_category">Add product</a>
                 </li>
 
                 <li class="nav-item">
@@ -47,6 +47,10 @@
             </#if>
 
         </ul>
+        <li class="nav-item">
+            <a class="nav-link" href="/users/cart" style="font-size: 25px; color: orange"><i
+                        class="fas fa-shopping-cart"></i></a>
+        </li>
         <#if known>
             <@l.logout/>
         <#else>
@@ -54,6 +58,6 @@
                 <a class="nav-link btn btn-primary" href="/login">Login</a>
             </li>
         </#if>
-        <div class="navbar-text mx-3"><#if user??>${name}<#else>Please log in</#if></div>
+        <div class="navbar-text mx-3"><#if user?? && user.id??>${name}<#else>Please log in</#if></div>
     </div>
 </nav>

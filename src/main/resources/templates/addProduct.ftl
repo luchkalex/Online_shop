@@ -1,7 +1,7 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-    <div class="form-group">
+    <div class="container form-group">
         <form method="post" enctype="multipart/form-data"
               <#if product?? && type??>action="/products/edit/${product.id}"</#if>>
 
@@ -71,14 +71,20 @@
 
             <input type="hidden" name="productStatus" value="1">
 
-            <div class="col-sm-4 mt-2 p-0">
-                <label for="category_select" class="mt-2">Select category</label>
-                <select class="custom-select" id="category_select" name="category_id">
-                    <#list categories as category>
-                        <option value=${category.id}>${category.title}</option>
-                    </#list>
-                </select>
-            </div>
+            <h3 class="my-3">Features</h3>
+
+            <#list features_of_cat as foc>
+                <div class="mt-3 border-bottom col-sm-4 p-0">
+
+                    <label for="feature${foc.feature.id}Select">${foc.feature.title}</label>
+
+                    <select class="custom-select" id="feature${foc.feature.id}Select" name="features_id">
+                        <#list foc.feature.valuesOfFeature as value_of_feature>
+                            <option value=${value_of_feature.id}>${value_of_feature.title}</option>
+                        </#list>
+                    </select>
+                </div>
+            </#list>
 
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit" class="btn btn-primary my-1">Save</button>

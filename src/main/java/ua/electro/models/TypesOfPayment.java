@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -12,10 +13,11 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-public class TypesOfPayment {
-    //    PICKUP, COURIER
+public class TypesOfPayment implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NonNull
     private Long id;
 
     @NonNull

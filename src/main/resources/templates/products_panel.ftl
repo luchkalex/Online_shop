@@ -20,6 +20,7 @@
             <div class="line"></div>
 
             <div>
+                <#--TODO: Add feature of discount-->
                 <form action="/control_panel/products" method="get">
                     <table class="table table-striped table-hover ">
                         <thead>

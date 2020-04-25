@@ -47,7 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/static/**",
                         "/activate/*",
                         "/products/**",
-                        "/img/**").permitAll()
+                        "/img/**",
+                        "/users/**").permitAll()
                 /*Other requests request authentication*/
                 .anyRequest().authenticated()
                 .and()

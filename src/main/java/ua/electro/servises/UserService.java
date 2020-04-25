@@ -1,11 +1,14 @@
 package ua.electro.servises;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import ua.electro.models.Role;
 import ua.electro.models.User;
 import ua.electro.repos.UserRepo;
@@ -14,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
@@ -112,6 +116,7 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
+
     public void editUser(User user, String username, String password, String email) {
 
         boolean isEmailChanged = (email != null && !email.equals(user.getEmail()))
@@ -149,4 +154,19 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public void save(User user) {
+        userRepo.save(user);
+    }
+
+    public User findOneById(Long id) {
+        return userRepo.findOneById(id);
+    }
+
+    public User getActualUser(@AuthenticationPrincipal User user, @ModelAttribute("user") User session_user) {
+        if (user != null) {
+            return findOneById(user.getId());
+        } else {
+            return session_user;
+        }
+    }
 }

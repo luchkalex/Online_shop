@@ -104,6 +104,10 @@ a[data-toggle="collapse"] {
     transform: translateY(-50%);
 }
 
+li {
+    list-style-type: none;
+}
+
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
@@ -181,4 +185,63 @@ td {
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
+}
+
+input[type='range'] {
+    overflow: hidden;
+    -webkit-appearance: none;
+    height: 25px;
+    background: transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+    height: 25px;
+    -webkit-appearance: none;
+    color: green;
+    margin-top: -1px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+    box-shadow: 0 0 0 green;
+    border: 0 solid green;
+    height: 8px;
+    width: 8px;
+    border-radius: 50px;
+    background: green;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: 2.5px;
+}
+
+input[type=range]::-moz-range-thumb {
+    box-shadow: 0 0 0 green;
+    border: 0 solid green;
+    height: 8px;
+    width: 8px;
+    border-radius: 50px;
+    background: green;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: 2.5px;
+}
+
+input[type="range"]::-moz-range-progress {
+    background-color: green;
+}
+
+input[type="range"]::-moz-range-track {
+    background-color: darkred;
+}
+
+/*input[type="range"]::-ms-fill-lower {*/
+/*    background-color: green;*/
+/*}*/
+/*input[type="range"]::-ms-fill-upper {*/
+/*    background-color: darkred;*/
+/*}*/
+
+.cart {
+    width: 50px;
+    height: auto;
+    color: orangered;
 }

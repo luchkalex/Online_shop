@@ -3,6 +3,7 @@ package ua.electro.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @ToString(of = "id")
 @EqualsAndHashCode(of = "id")
 @Table(name = "features_of_category")
-public class FeaturesOfCategory {
+public class FeaturesOfCategory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -4,11 +4,7 @@
 <@c.page>
     <div class="container-1300">
         <div class="row mr-3">
-            <div class="col-3">
-                <#--                <input type="text" value="${pf.priceMin}" placeholder="min" name="priceMin"-->
-                <#--                       class="col-sm-5">-->
-                <#--                <input type="text" value="${pf.priceMax?string["0"]}" placeholder="max" name="priceMax"-->
-                <#--                       class="col-sm-5">-->
+            <div class="col-3 mt-3">
                 <form method="post">
                     <input type="submit" class="btn btn-primary" value="Search">
                     <div><span>Price</span></div>
@@ -40,9 +36,10 @@
                         </#list>
 
                     <#else>
-                        <div>
+                        <div class="mt-3">
+                            <span style="font-size: 20px">Categories</span>
                             <#list categories as category>
-                                <div>
+                                <div class="mt-1 border-right">
                                     <a href="/products/category/${category.id}" class="btn-link">${category.title}</a>
                                 </div>
                             </#list>

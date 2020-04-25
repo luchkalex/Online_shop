@@ -12,10 +12,13 @@ import java.io.Serializable;
 @Entity
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = {"id", "product"})
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
-@Table(name = "order_item")
-public class OrderItem implements Serializable {
+@Table(name = "cart_items")
+public class CartItem implements Serializable {
+
+    static final long serialVersionUID = -5765298360908027461L;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,15 +31,16 @@ public class OrderItem implements Serializable {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id")
-    private OrderOfProduct order;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotNull
     private Integer quantity;
 
-    public OrderItem(Product product, Integer quantity, OrderOfProduct order) {
+    public CartItem(Long id, User user, Product product, Integer quantity) {
+        this.id = id;
+        this.user = user;
         this.product = product;
         this.quantity = quantity;
-        this.order = order;
     }
 }

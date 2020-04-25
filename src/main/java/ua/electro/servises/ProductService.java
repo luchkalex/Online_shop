@@ -1,6 +1,7 @@
 package ua.electro.servises;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ua.electro.models.Category;
 import ua.electro.models.Income;
 import ua.electro.models.Product;
@@ -10,6 +11,7 @@ import ua.electro.repos.ProductRepo;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
 
     private final ProductRepo productRepo;

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @ToString(of = {"id", "username"})
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     static final long serialVersionUID = -3249357386608006686L;
 
@@ -36,7 +37,6 @@ public class User implements UserDetails {
 
 
     @NonNull
-    @Length(max = 45, message = "Password is too long (max - 45 symbols)")
     @NotBlank(message = "Password can't be empty!")
     private String password;
 
@@ -58,13 +58,13 @@ public class User implements UserDetails {
     private String phone;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Message> messages;
+    private Set<Message> messages = new HashSet<>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<OrderOfProduct> orders;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<OrderOfProduct> orders = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -92,14 +92,8 @@ public class User implements UserDetails {
     )
     private Set<Product> wishlist_products = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_items",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "product_id")
-            }
-    )
-    private Set<Product> products_users = new HashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<CartItem> cartItems = new HashSet<>();
 
     /*@ElementCollection - We use @ElementCollection annotation to declare an element-collection
         mapping. All the records of the collection are stored in a separate table.
@@ -119,6 +113,10 @@ public class User implements UserDetails {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    public User(long id) {
+        this.id = id;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

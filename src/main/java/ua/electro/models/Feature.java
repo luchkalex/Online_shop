@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -14,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Feature {
+public class Feature implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

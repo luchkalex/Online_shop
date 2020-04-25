@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +17,9 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @ToString(of = {"id", "title"})
-public class Product {
+public class Product implements Serializable {
+
+    static final long serialVersionUID = 4214776066879963819L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,7 +46,7 @@ public class Product {
         this.incomes = product.incomes;
         this.priceHistories = product.priceHistories;
         this.wishlist_users = product.wishlist_users;
-        this.cart_users = product.cart_users;
+        this.cartItems = product.cartItems;
         this.valuesOfFeatures = product.valuesOfFeatures;
     }
 
@@ -104,14 +107,8 @@ public class Product {
     )
     private Set<User> wishlist_users = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart_items",
-            joinColumns = {@JoinColumn(name = "product_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")
-            }
-    )
-    private Set<User> cart_users = new HashSet<>();
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<CartItem> cartItems = new HashSet<>();
 
     @ManyToMany
     @JoinTable(

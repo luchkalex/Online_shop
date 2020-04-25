@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductStatuses {
+public class ProductStatuses implements Serializable {
     //    NOT_AVAILABLE, IN_STOCK, PRE_ORDER, NEW, DELETED
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

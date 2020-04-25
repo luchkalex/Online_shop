@@ -4,19 +4,14 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.electro.models.Category;
-import ua.electro.models.Income;
-import ua.electro.models.Product;
-import ua.electro.models.ValueOfFeature;
-import ua.electro.servises.CategoryService;
-import ua.electro.servises.FeatureService;
-import ua.electro.servises.ProductFilter;
-import ua.electro.servises.ProductService;
+import ua.electro.models.*;
+import ua.electro.servises.*;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -26,17 +21,20 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Controller
+@SessionAttributes("session_user")
 @RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
     private final FeatureService featuresService;
+    private final UserService userService;
 
-    public ProductController(ProductService productService, CategoryService categoryService, FeatureService featuresService) {
+    public ProductController(ProductService productService, CategoryService categoryService, FeatureService featuresService, UserService userService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.featuresService = featuresService;
+        this.userService = userService;
     }
 
     @Value("${upload.path}")
@@ -50,9 +48,20 @@ public class ProductController {
     /*-----------------------Add Product---------------------------*/
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/add_product")
-    public String addProduct(Model model) {
+    @GetMapping("/add_product_choice_category")
+    public String preAddProduct(Model model) {
         model.addAttribute("categories", categoryService.findAll());
+        return "preAddProduct";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/add_product")
+    public String addProduct(
+            @RequestParam("category_id") Integer category_id,
+            Model model) {
+
+        val features = featuresService.findByCategory(categoryService.findOneById(Long.valueOf(category_id)));
+        model.addAttribute("features_of_cat", features);
         return "addProduct";
     }
 
@@ -63,11 +72,17 @@ public class ProductController {
             @RequestParam("category_id") Integer category_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
+            @RequestParam List<Long> features_id,
             @RequestParam("file") MultipartFile file,
             Model model) throws IOException {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
+        if (features_id != null) {
+            features_id.forEach(feature_id -> {
+                product.getValuesOfFeatures().add(featuresService.findOneById(feature_id));
+            });
+        }
 
         if (category != null) {
             product.setCategory(category);
@@ -85,7 +100,6 @@ public class ProductController {
             saveFile(product, file);
             model.addAttribute("product", null);
             productService.save(product);
-
         }
 
         return "redirect:/control_panel/products";
@@ -186,12 +200,16 @@ public class ProductController {
 
     @GetMapping("/catalog")
     public String showCatalog(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
         productFilter = productService.validate(productFilter);
 
         val products = productService.findWithFilter(productFilter);
+
+        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
 
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
@@ -202,6 +220,8 @@ public class ProductController {
 
     @GetMapping("/category/{category_id}")
     public String getProductOfCategory(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
             @PathVariable("category_id") Integer category_id,
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
@@ -210,9 +230,13 @@ public class ProductController {
 
         val features = featuresService.findByCategory(category);
 
+        productFilter.setCategory(category);
+
         productFilter = productService.validate(productFilter);
 
         val products = productService.findWithFilter(productFilter);
+
+        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
 
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
@@ -225,6 +249,8 @@ public class ProductController {
 
     @PostMapping("/category/{category_id}")
     public String getProductOfCategory(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
             @PathVariable("category_id") Integer category_id,
             @RequestParam(required = false) List<Long> features_id,
             @ModelAttribute("productFilter") ProductFilter productFilter,
@@ -247,6 +273,7 @@ public class ProductController {
 
         val features = featuresService.findByCategory(category);
 
+        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
@@ -255,6 +282,50 @@ public class ProductController {
         return "catalog";
     }
 
+    /*-----------Product page-----------------------*/
+
+    @GetMapping("/{product_id}")
+    public String getProduct(
+            @PathVariable("product_id") Product product,
+            Model model) {
+
+        model.addAttribute("product", product);
+
+        return "productPage";
+    }
+
+    /*Add to cart*/
+    @GetMapping("/add_to_cart/{product_id}")
+    public String addToCart(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
+            @PathVariable("product_id") Product product,
+            Model model
+    ) {
+
+        user = userService.getActualUser(user, session_user);
+
+        // FIXME: 4/22/20 Cart Item use Id and primary key. It is mean that we can add similar item with identical
+        //  product and user. But if I create complex key, program goes down with exception
+        //  java.sql.SQLNonTransientConnectionException: Communications link failure during rollback(). Transaction resolution unknown.
+
+        if (user.getId() == null) {
+            user.getCartItems().add(new CartItem((long) (Math.random() * Long.MAX_VALUE), user, product, 1));
+        } else {
+            product.getCartItems().add(new CartItem(null, user, product, 1));
+
+            productService.save(product);
+        }
+
+        model.addAttribute("user", user);
+
+        return "redirect:/users/cart";
+    }
+
+    @ModelAttribute("session_user")
+    public User createUser() {
+        return new User();
+    }
 
     private void saveFile(Product product, @RequestParam("file") MultipartFile file) throws IOException {
         if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {

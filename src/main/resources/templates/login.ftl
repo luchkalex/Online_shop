@@ -2,7 +2,7 @@
 <#import "parts/login_tmp.ftl" as l>
 
 <@c.page>
-    <div class="container">
+    <div class="container mt-5">
         <h4 class="text-sm-center">Login page</h4>
 
         <#if message??>

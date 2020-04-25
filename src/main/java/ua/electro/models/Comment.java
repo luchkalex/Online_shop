@@ -5,13 +5,14 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @ToString(of = {"id", "text"})
-public class Comment {
+public class Comment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
