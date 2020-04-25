@@ -80,13 +80,19 @@
 
                     <select class="custom-select" id="feature${foc.feature.id}Select" name="features_id">
                         <#list foc.feature.valuesOfFeature as value_of_feature>
-                            <option value=${value_of_feature.id}>${value_of_feature.title}</option>
+                            <option value=${value_of_feature.id}
+                                    <#list product.valuesOfFeatures as products_vof>
+                                    <#if value_of_feature.id = products_vof.id>selected</#if>
+                                    </#list>>
+                                ${value_of_feature.title}
+                            </option>
                         </#list>
                     </select>
                 </div>
             </#list>
 
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+            <input type="hidden" name="category_id" value="${product.category.id}"/>
             <button type="submit" class="btn btn-primary my-1">Save</button>
         </form>
     </div>

@@ -112,7 +112,9 @@ public class ProductController {
     public String editProduct(
             @PathVariable("product") @ModelAttribute Product product,
             Model model) {
-        model.addAttribute("categories", categoryService.findAll());
+
+        val features = featuresService.findByCategory(product.getCategory());
+        model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "edit");
         model.addAttribute("product", product);
         return "addProduct";
@@ -122,10 +124,11 @@ public class ProductController {
     @PostMapping("/edit/{product_id}")
     public String editProduct(
             /*Price separated*/
-            @PathVariable("product_id") Long product_id,
             @RequestParam("category_id") Integer category_id,
+            @PathVariable("product_id") Long product_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
+            @RequestParam List<Long> features_id,
             /*TODO: Add file validation on (Type, size, ect)*/
             @RequestParam("file") MultipartFile file,
             Model model) throws IOException {
@@ -139,9 +142,18 @@ public class ProductController {
             }
         }
 
+        product.getValuesOfFeatures().clear();
+
+        if (features_id != null) {
+            features_id.forEach(feature_id -> {
+                product.getValuesOfFeatures().add(featuresService.findOneById(feature_id));
+            });
+        }
+
         if (category != null) {
             product.setCategory(category);
         }
+
 
         product.setId(product_id);
 
