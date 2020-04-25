@@ -7,6 +7,13 @@
 
         <#--TODO: Add form get request to order-->
         <a href="/users/order_maker">Make order</a>
+
+        <#if cartError??>
+            <div class="invalid-feedback">
+                ${cartError}
+            </div>
+        </#if>
+
         <table class="table table-striped table-hover ">
             <thead>
             <tr>
@@ -18,7 +25,7 @@
             </tr>
             </thead>
             <tbody>
-            <#list user.cartItems as cartItem>
+            <#list cartItems as cartItem>
 
                 <tr>
                     <td class="text-center">${cartItem.product.title}</td>

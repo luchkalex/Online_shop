@@ -1,10 +1,9 @@
 package ua.electro.servises;
 
+import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.electro.models.Category;
-import ua.electro.models.Income;
-import ua.electro.models.Product;
+import ua.electro.models.*;
 import ua.electro.repos.IncomeRepo;
 import ua.electro.repos.ProductRepo;
 
@@ -139,5 +138,26 @@ public class ProductService {
         }
 
         return productFilter;
+    }
+
+    public List<Product> filterWithFeatures(List<Long> features_id, List<Product> products) {
+        /*Filtering by features*/
+        if (features_id != null) {
+            features_id.forEach(filter -> {
+                CollectionUtils.filter(products, product -> ((Product) product).getValuesOfFeatures().contains(new ValueOfFeature(filter)));
+            });
+        }
+        return products;
+    }
+
+    public User addCartItems(User user, Product product) {
+        if (user.getId() == null) {
+            user.getCartItems().add(new CartItem((long) (Math.random() * Long.MAX_VALUE), user, product, 1));
+
+        } else {
+            product.getCartItems().add(new CartItem(null, user, product, 1));
+            save(product);
+        }
+        return user;
     }
 }

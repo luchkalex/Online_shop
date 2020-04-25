@@ -7,14 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.electro.models.Message;
 import ua.electro.models.User;
 import ua.electro.repos.MessageRepo;
+import ua.electro.servises.UserService;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -23,12 +21,15 @@ import java.util.Set;
 
 @Controller
 @Slf4j
+@SessionAttributes("session_user")
 public class MainController {
 
     private final MessageRepo messageRepo;
+    private final UserService userService;
 
-    public MainController(MessageRepo messageRepo) {
+    public MainController(MessageRepo messageRepo, UserService userService) {
         this.messageRepo = messageRepo;
+        this.userService = userService;
     }
 
 
@@ -37,7 +38,12 @@ public class MainController {
     private String uploadPath;
 
     @GetMapping("/")
-    public String greeting() {
+    public String greeting(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("user") User session_user,
+            Model model) {
+
+        model.addAttribute("user", userService.getActualUser(user, session_user));
         return "greeting";
     }
 
@@ -157,6 +163,13 @@ public class MainController {
 
 
         return "redirect:/users-messages/" + userId;
+    }
+
+    @ModelAttribute("session_user")
+    public User createUser() {
+        User user = new User();
+        user.setActive(true);
+        return user;
     }
 
 }

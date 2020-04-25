@@ -7,6 +7,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ua.electro.models.CartItem;
+import ua.electro.models.User;
+
+import java.util.Set;
 
 @Repository
 public interface CartRepo extends JpaRepository<CartItem, Integer> {
@@ -22,4 +25,6 @@ public interface CartRepo extends JpaRepository<CartItem, Integer> {
     @Modifying
     @Override
     <S extends CartItem> S save(S s);
+
+    Set<CartItem> findByUser(User user);
 }

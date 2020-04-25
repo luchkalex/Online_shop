@@ -2,7 +2,6 @@ package ua.electro.controllers;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.electro.models.*;
+import ua.electro.models.Category;
+import ua.electro.models.Income;
+import ua.electro.models.Product;
+import ua.electro.models.User;
 import ua.electro.servises.*;
 
 import javax.validation.Valid;
@@ -42,14 +44,12 @@ public class ProductController {
 
 
 
-    /*-----------------------Mapping---------------------------*/
-
-
     /*-----------------------Add Product---------------------------*/
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/add_product_choice_category")
     public String preAddProduct(Model model) {
+
         model.addAttribute("categories", categoryService.findAll());
         return "preAddProduct";
     }
@@ -61,6 +61,7 @@ public class ProductController {
             Model model) {
 
         val features = featuresService.findByCategory(categoryService.findOneById(Long.valueOf(category_id)));
+
         model.addAttribute("features_of_cat", features);
         return "addProduct";
     }
@@ -68,7 +69,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add_product")
     public String addProduct(
-            /*Price separated*/
+            // TODO: 4/25/20 Price separated?
             @RequestParam("category_id") Integer category_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
@@ -78,30 +79,28 @@ public class ProductController {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
-        if (features_id != null) {
-            features_id.forEach(feature_id -> {
-                product.getValuesOfFeatures().add(featuresService.findOneById(feature_id));
-            });
-        }
+        product.setValuesOfFeatures(featuresService.getSetValuesOfFeatures(features_id));
 
         if (category != null) {
             product.setCategory(category);
         }
 
         if (bindingResult.hasErrors()) {
+
             val errorMap = ControllerUtil.getErrors(bindingResult);
             val categories = categoryService.findAll();
             model.mergeAttributes(errorMap);
             model.addAttribute("product", product);
             model.addAttribute("categories", categories);
             return "addProduct";
+
         } else {
 
             saveFile(product, file);
+
             model.addAttribute("product", null);
             productService.save(product);
         }
-
         return "redirect:/control_panel/products";
     }
 
@@ -114,6 +113,7 @@ public class ProductController {
             Model model) {
 
         val features = featuresService.findByCategory(product.getCategory());
+
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "edit");
         model.addAttribute("product", product);
@@ -123,7 +123,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit/{product_id}")
     public String editProduct(
-            /*Price separated*/
+            // TODO: 4/25/20 Price separated?
             @RequestParam("category_id") Integer category_id,
             @PathVariable("product_id") Long product_id,
             @Valid @ModelAttribute("product") Product product,
@@ -135,25 +135,13 @@ public class ProductController {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
-        if (Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
-            Product prev_product = productService.findOneById(product_id);
-            if (prev_product.getPhoto() != null) {
-                product.setPhoto(prev_product.getPhoto());
-            }
-        }
-
         product.getValuesOfFeatures().clear();
 
-        if (features_id != null) {
-            features_id.forEach(feature_id -> {
-                product.getValuesOfFeatures().add(featuresService.findOneById(feature_id));
-            });
-        }
+        product.setValuesOfFeatures(featuresService.getSetValuesOfFeatures(features_id));
 
         if (category != null) {
             product.setCategory(category);
         }
-
 
         product.setId(product_id);
 
@@ -166,12 +154,10 @@ public class ProductController {
             return "addProduct";
         } else {
 
-            saveFile(product, file);
+            product.setPhoto(saveFile(product, file));
             model.addAttribute("product", null);
             productService.save(product);
-
         }
-
         return "redirect:/control_panel/products";
     }
 
@@ -180,14 +166,9 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/delete/{product_id}")
     public String deleteProduct(
-            @PathVariable("product_id") Product product,
-            Model model) {
+            @PathVariable("product_id") Product product) {
 
         productService.delete(product);
-        model.addAttribute("result", "Product deleted");
-//
-//            model.addAttribute("result", "Product is not deleted");
-//
 
         return "redirect:/control_panel/products";
     }
@@ -222,11 +203,9 @@ public class ProductController {
         val products = productService.findWithFilter(productFilter);
 
         model.addAttribute("cur_user", userService.getActualUser(user, session_user));
-
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
         model.addAttribute("pf", productFilter);
-
         return "catalog";
     }
 
@@ -249,13 +228,11 @@ public class ProductController {
         val products = productService.findWithFilter(productFilter);
 
         model.addAttribute("cur_user", userService.getActualUser(user, session_user));
-
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
         model.addAttribute("cur_category", category);
         model.addAttribute("pf", productFilter);
-
         return "catalog";
     }
 
@@ -276,12 +253,7 @@ public class ProductController {
 
         List<Product> products = productService.findWithFilter(productFilter);
 
-        /*Filtering by features*/
-        if (features_id != null) {
-            features_id.forEach(filter -> {
-                CollectionUtils.filter(products, product -> ((Product) product).getValuesOfFeatures().contains(new ValueOfFeature(filter)));
-            });
-        }
+        products = productService.filterWithFeatures(features_id, products);
 
         val features = featuresService.findByCategory(category);
 
@@ -290,7 +262,6 @@ public class ProductController {
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
         model.addAttribute("pf", productFilter);
-
         return "catalog";
     }
 
@@ -306,7 +277,8 @@ public class ProductController {
         return "productPage";
     }
 
-    /*Add to cart*/
+    /*-----------------------Cart-----------------------*/
+
     @GetMapping("/add_to_cart/{product_id}")
     public String addToCart(
             @AuthenticationPrincipal User user,
@@ -321,26 +293,16 @@ public class ProductController {
         //  product and user. But if I create complex key, program goes down with exception
         //  java.sql.SQLNonTransientConnectionException: Communications link failure during rollback(). Transaction resolution unknown.
 
-        if (user.getId() == null) {
-            user.getCartItems().add(new CartItem((long) (Math.random() * Long.MAX_VALUE), user, product, 1));
-        } else {
-            product.getCartItems().add(new CartItem(null, user, product, 1));
-
-            productService.save(product);
-        }
+        user = productService.addCartItems(user, product);
 
         model.addAttribute("user", user);
 
         return "redirect:/users/cart";
     }
 
-    @ModelAttribute("session_user")
-    public User createUser() {
-        return new User();
-    }
 
-    private void saveFile(Product product, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+    private String saveFile(Product product, @RequestParam("file") MultipartFile file) throws IOException {
+        if (!Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             File uploadDir = new File(uploadPath);
 
             if (!uploadDir.exists()) {
@@ -355,7 +317,27 @@ public class ProductController {
 
             file.transferTo(new File(uploadPath + "/" + resultFileName));
 
-            product.setPhoto(resultFileName);
+            return resultFileName;
+
+        } else if (product.getId() != null) {
+
+            Product prev_product = productService.findOneById(product.getId());
+
+            if (prev_product.getPhoto() != null) {
+                return prev_product.getPhoto();
+            } else {
+                return null;
+            }
+
+        } else {
+            return null;
         }
+    }
+
+    @ModelAttribute("session_user")
+    public User createUser() {
+        User user = new User();
+        user.setActive(true);
+        return user;
     }
 }

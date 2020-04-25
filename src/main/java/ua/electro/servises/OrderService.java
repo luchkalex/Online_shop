@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ua.electro.models.OrderOfProduct;
 import ua.electro.models.TypesOfDelivery;
 import ua.electro.models.TypesOfPayment;
+import ua.electro.models.User;
 import ua.electro.repos.OrderRepo;
 
 import java.util.List;
@@ -38,5 +39,17 @@ public class OrderService {
 
     public void save(OrderOfProduct order) {
         orderRepo.save(order);
+    }
+
+    public OrderOfProduct findOneById(Long order_id) {
+        return orderRepo.findOneById(order_id);
+    }
+
+    public void cancelOrder(Long order_id) {
+        orderRepo.cancelOrder(order_id);
+    }
+
+    public List<OrderOfProduct> findByUser(User user) {
+        return orderRepo.findByUser(user);
     }
 }

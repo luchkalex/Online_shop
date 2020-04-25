@@ -169,4 +169,10 @@ public class UserService implements UserDetailsService {
             return session_user;
         }
     }
+
+    public void deactivateUser(Long user_id) {
+        userRepo.deactivateUser(user_id);
+    }
+
+
 }

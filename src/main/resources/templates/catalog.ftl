@@ -6,6 +6,8 @@
         <div class="row mr-3">
             <div class="col-3 mt-3">
                 <form method="post">
+
+                    <#--TODO: For ordinar catalog make price filter-->
                     <input type="submit" class="btn btn-primary" value="Search">
                     <div><span>Price</span></div>
                     <div>

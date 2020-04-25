@@ -11,7 +11,11 @@ import ua.electro.servises.OrderService;
 import ua.electro.servises.UserService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+
 /*This controller made for user management*/
 
 /*PreAuthorize means that you have to have privileges to get access to this methods */
@@ -32,10 +36,13 @@ public class UserController {
     }
 
 
+    /*------------------------Delete?------------------------------*/
+
     /*Returns list of users*/
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public String userList(Model model) {
+
         model.addAttribute(userService.findAll());
         return "userList";
     }
@@ -44,6 +51,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model) {
+
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
         return "userEdit";
@@ -58,19 +66,41 @@ public class UserController {
             @RequestParam("user_id") User user) {
 
         userService.saveUser(username, form, user);
-
         return "redirect:/users";
     }
+
+    /*------------------------------Profile---------------------------------*/
 
     @GetMapping("profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user) {
 
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
+        List<OrderOfProduct> orders = orderService.findByUser(user);
 
-
+        model.addAttribute("user", user);
+        model.addAttribute("orders", orders);
         return "profile";
     }
+
+    @PostMapping("profile")
+    public String editProfile(
+            @AuthenticationPrincipal User user,
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String email
+    ) {
+
+        userService.editUser(user, username, password, email);
+        return "redirect:/";
+    }
+
+    @GetMapping("deleteAccount")
+    public String deleteAccount(@AuthenticationPrincipal User user) {
+
+        userService.deactivateUser(user.getId());
+        return "redirect:/";
+    }
+
+    /*------------------------------Cart------------------------------*/
 
     @GetMapping("/cart")
     public String getCart(
@@ -80,22 +110,24 @@ public class UserController {
 
         user = userService.getActualUser(user, session_user);
 
-        model.addAttribute("user", user);
+        Set<CartItem> cartItems = getCartItems(user);
 
+        model.addAttribute("user", user);
+        model.addAttribute("cartItems", cartItems);
         return "cartPage";
     }
 
-    // FIXME: 4/23/20 In auth user: Edit works but doesn't display changes
+
     @GetMapping("editCart")
     public String getCart(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @RequestParam("cartItem_id") Long cartItem_id,
-            @RequestParam("quantity") Integer quantity,
-            Model model) {
+            @RequestParam("quantity") Integer quantity) {
 
         user = userService.getActualUser(user, session_user);
 
+        /*Block for save deleting. Update only cart item that have current user*/
         for (CartItem u_cartItem : user.getCartItems()) {
             if (u_cartItem.getId().equals(cartItem_id)) {
                 u_cartItem.setQuantity(quantity);
@@ -103,26 +135,21 @@ public class UserController {
                 if (user.getId() != null) {
                     cartService.saveSet(Collections.singleton(u_cartItem));
                 }
-
-//                model.addAttribute("user", user);
                 return "redirect:/users/cart";
             }
         }
-
-//        model.addAttribute("user", user);
         return "redirect:/users/cart";
     }
 
-    // FIXME: 4/23/20 In auth user: Delete work but doesn't displays
     @GetMapping("deleteCart/{cartItem_id}")
     public String deleteCart(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
-            @PathVariable("cartItem_id") Long cartItem_id,
-            Model model) {
+            @PathVariable("cartItem_id") Long cartItem_id) {
 
         user = userService.getActualUser(user, session_user);
 
+        /*Block for save deleting. Update only cart item that have current user*/
         for (CartItem u_cartItem : user.getCartItems()) {
             if (u_cartItem.getId().equals(cartItem_id)) {
                 user.getCartItems().remove(u_cartItem);
@@ -132,12 +159,13 @@ public class UserController {
                 return "redirect:/users/cart";
             }
         }
-
         return "redirect:/users/cart";
     }
 
+    /*------------------------------Order-----------------------------------*/
+
     @GetMapping("order_maker")
-    public String getOrderPage(
+    public String getEditOrderPage(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             Model model) {
@@ -145,14 +173,23 @@ public class UserController {
         // TODO: 4/22/20 Check on empty cart
         user = userService.getActualUser(user, session_user);
 
+
         model.addAttribute("user", user);
+
+        /*In case when cart empty return error to cart*/
+        if (user.getCartItems().isEmpty()) {
+            Set<CartItem> cartItems = getCartItems(user);
+            model.addAttribute("cartError", "Cart is empty. You can't make order");
+            model.addAttribute("cartItems", cartItems);
+            return "cartPage";
+        }
+
         model.addAttribute("types_of_payment", orderService.findAllTypesOfPayment());
         model.addAttribute("types_of_delivery", orderService.findAllTypesOfDelivery());
-
-        return "orderPage";
+        return "editOrderPage";
     }
 
-    // TODO: 4/25/20 When order will be approved and done add to outcome
+    // TODO: 4/25/20 When order will be approved and completed add to outcome
     @PostMapping("order_maker")
     public String makeOrder(
             @AuthenticationPrincipal User user,
@@ -165,11 +202,10 @@ public class UserController {
         user = userService.getActualUser(user, session_user);
 
         order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
-
         order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
-
         order.setTotal(0);
 
+        /*Copy from cart items to order items*/
         user.getCartItems().forEach(cartItem -> {
             order.getOrderItems().add(new OrderItem(
                     cartItem.getProduct(),
@@ -179,38 +215,41 @@ public class UserController {
             order.setTotal(order.getTotal() + (cartItem.getQuantity() * cartItem.getProduct().getPrice()));
         });
 
+        /*If user registered, add to order*/
         if (user.getId() != null) {
             order.setUser(user);
         }
 
-        /*Delete in db*/
+        /*Clear cart in db*/
         cartService.deleteSet(user.getCartItems());
 
         orderService.save(order);
 
-        user.getCartItems().clear();
-
-        user.getOrders().add(order);
-
-        model.addAttribute("user", user);
         model.addAttribute("order", order);
+        model.addAttribute("user", user);
 
-        return "orderConfirmPage";
+        return "orderPage";
+    }
+
+    @GetMapping("order/{order_id}")
+    public String getOrderPage(
+            @PathVariable("order_id") Long order_id,
+            Model model) {
+
+        model.addAttribute("order", orderService.findOneById(order_id));
+        return "orderPage";
+    }
+
+    @GetMapping("cancelOrder/{order_id}")
+    public String cancelOrder(@PathVariable("order_id") Long order_id) {
+
+        orderService.cancelOrder(order_id);
+        return "redirect:/users/profile";
     }
 
 
-    @PostMapping("profile")
-    public String editProfile(
-            @AuthenticationPrincipal User user,
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String email
-    ) {
+    /*------------------------------Subscriptions Delete?------------------------------*/
 
-        userService.editUser(user, username, password, email);
-
-        return "redirect:/";
-    }
 
     @GetMapping("subscribe/{user}")
     public String subscribe(
@@ -250,9 +289,23 @@ public class UserController {
         return "subscriptions";
     }
 
-    // FIXME: 4/22/20 This method repeated in ProductController
+    /*------------------------------Additional------------------------------*/
+
     @ModelAttribute("session_user")
     public User createUser() {
-        return new User();
+        User user = new User();
+        user.setActive(true);
+        return user;
+    }
+
+    private Set<CartItem> getCartItems(User user) {
+        Set<CartItem> cartItems;
+
+        if (user.getId() != null) {
+            cartItems = cartService.findByUser(user);
+        } else {
+            cartItems = user.getCartItems();
+        }
+        return cartItems;
     }
 }

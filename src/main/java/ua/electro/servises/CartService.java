@@ -3,6 +3,7 @@ package ua.electro.servises;
 
 import org.springframework.stereotype.Service;
 import ua.electro.models.CartItem;
+import ua.electro.models.User;
 import ua.electro.repos.CartRepo;
 
 import java.util.Set;
@@ -27,5 +28,9 @@ public class CartService {
 
     public void deleteSet(Set<CartItem> cartItems) {
         cartItems.forEach(cartRepo::delete);
+    }
+
+    public Set<CartItem> findByUser(User user) {
+        return cartRepo.findByUser(user);
     }
 }
