@@ -21,14 +21,24 @@
                 <input type="email" class="form-control col-sm-4" name="email" id="email_input" value="${user.email!''}"
                        placeholder="Email">
             </div>
+
+            <div class="form-group">
+                <label for="address_input">Address</label>
+                <input type="text" class="form-control col-sm-4" name="address" id="address_input"
+                       value="${user.address!''}"
+                       placeholder="Address">
+            </div>
+
+
+            <div class="form-group">
+                <label for="phone_input">Phone</label>
+                <input type="tel" class="form-control col-sm-4" name="phone" id="phone_input" value="${user.phone!''}"
+                       placeholder="Phone">
+            </div>
+
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit" class="btn btn-primary">Save</button>
-            <a href="/users/deleteAccount" class="btn btn-danger">Link del</a>
-        </form>
-
-        <form action="/users/deleteAccount">
-            <button type="submit" class="btn btn-danger">Delete account</button>
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+            <a href="/users/deleteAccount" class="btn btn-danger">Delete account</a>
         </form>
 
         <h3 class="mt-3">Orders</h3>

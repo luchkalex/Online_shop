@@ -54,6 +54,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
                 integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
                 crossorigin="anonymous"></script>
+        <script src="/static/main.js"></script>
     <#else>
         <div class="container mt-5 text-center">
             <h3>This user is not available please login</h3>

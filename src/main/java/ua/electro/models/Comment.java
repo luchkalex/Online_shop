@@ -24,6 +24,8 @@ public class Comment implements Serializable {
     @NotBlank(message = "Description can't be empty!")
     private String text;
 
+    private byte rating;
+
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -33,4 +35,6 @@ public class Comment implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
+
+
 }

@@ -9,8 +9,7 @@
 
                 <div class="ml-2">
                     <label for="rating"><#if product.rating??>${product.rating}<#else >0</#if></label>
-                    <input id="rating" min="1" max="5" value="<#if product.rating??>${product.rating}<#else >0</#if>"
-                           class="mx-2 mt-2" type="range" readonly="readonly" disabled>
+                    <i class="fas fa-star" style="color: orange"></i>
                 </div>
 
                 <a href="/products/${product.id}">
@@ -34,14 +33,13 @@
                 </div>
 
                 <div class="card-footer text-muted">
-                    <#if cur_user??>
-                        <#assign inCart = false>
-                        <#list cur_user.cartItems as cartItem>
-                            <#if cartItem.product.id = product.id><#assign inCart = true ></#if>
+                    <#assign inCart = false>
+                    <#if user??>
+                        <#list user.cartItems as cartItem>
+                            <#if cartItem.product.id = product.id>Incart<#assign inCart = true ></#if>
                         </#list>
                     </#if>
                     <#if inCart>
-                    <#--TODO: Add link to cart page in both cases-->
                         <a href="/users/cart" class="btn btn-secondary">In cart</a>
                     <#else >
                         <a href="/products/add_to_cart/${product.id}" class="btn btn-primary">Add to cart</a>

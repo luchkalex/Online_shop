@@ -6,9 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.electro.models.*;
-import ua.electro.servises.CartService;
-import ua.electro.servises.OrderService;
-import ua.electro.servises.UserService;
+import ua.electro.servises.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,11 +26,15 @@ public class UserController {
     private final UserService userService;
     private final OrderService orderService;
     private final CartService cartService;
+    private final ProductService productService;
+    private final CommentService commentService;
 
-    public UserController(UserService userService, OrderService orderService, CartService cartService) {
+    public UserController(UserService userService, OrderService orderService, CartService cartService, ProductService productService, CommentService commentService) {
         this.userService = userService;
         this.orderService = orderService;
         this.cartService = cartService;
+        this.productService = productService;
+        this.commentService = commentService;
     }
 
 
@@ -84,12 +86,10 @@ public class UserController {
     @PostMapping("profile")
     public String editProfile(
             @AuthenticationPrincipal User user,
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String email
+            @ModelAttribute("user") User newUser
     ) {
 
-        userService.editUser(user, username, password, email);
+        userService.editUser(user, newUser);
         return "redirect:/";
     }
 
@@ -246,6 +246,34 @@ public class UserController {
         orderService.cancelOrder(order_id);
         return "redirect:/users/profile";
     }
+
+    /*------------------------------Comments------------------------------*/
+
+    @GetMapping("comment/{product_id}")
+    public String getCommentPage(
+            @PathVariable("product_id") Long product_id,
+            Model model) {
+
+        model.addAttribute("product", productService.findOneById(product_id));
+        return "feedback";
+    }
+
+    @PostMapping("comment/{product_id}")
+    public String getCommentPage(
+            @AuthenticationPrincipal User user,
+            @PathVariable("product_id") Long product_id,
+            @ModelAttribute("comment") Comment comment,
+            Model model) {
+
+        comment.setAuthor(user);
+        comment.setProduct(productService.findOneById(product_id));
+
+        commentService.save(comment);
+
+        model.addAttribute("product", productService.findOneById(product_id));
+        return "redirect:/products/" + product_id;
+    }
+
 
 
     /*------------------------------Subscriptions Delete?------------------------------*/

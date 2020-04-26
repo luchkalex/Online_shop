@@ -178,6 +178,12 @@ td {
     width: 100%;
 }
 
+.product-big-image {
+    object-fit: cover;
+    height: 500px;
+    width: 100%;
+}
+
 .container-1300 {
     max-width: 1300px;
     /*width: 100%;*/

@@ -9,10 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ua.electro.models.Category;
-import ua.electro.models.Income;
-import ua.electro.models.Product;
-import ua.electro.models.User;
+import ua.electro.models.*;
 import ua.electro.servises.*;
 
 import javax.validation.Valid;
@@ -191,6 +188,10 @@ public class ProductController {
 
     /*-----------------------Catalog---------------------------*/
 
+    // TODO: 4/26/20 Trigger when we add comment we review product rating and set ave
+
+    // FIXME: 4/26/20 Rating of every product 0.0
+    // FIXME: 4/26/20 After deleting product from cart displays "in cart"
     @GetMapping("/catalog")
     public String showCatalog(
             @AuthenticationPrincipal User user,
@@ -202,9 +203,10 @@ public class ProductController {
 
         val products = productService.findWithFilter(productFilter);
 
-        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
+        model.addAttribute("user", userService.getActualUser(user, session_user));
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
+
         model.addAttribute("pf", productFilter);
         return "catalog";
     }
@@ -269,10 +271,26 @@ public class ProductController {
 
     @GetMapping("/{product_id}")
     public String getProduct(
+            @AuthenticationPrincipal User user,
+            @ModelAttribute("session_user") User session_user,
             @PathVariable("product_id") Product product,
             Model model) {
 
+        user = userService.getActualUser(user, session_user);
+
+        boolean commented = false;
+
+        for (Comment comment : product.getComments()) {
+            if (comment.getAuthor() == user) {
+                commented = true;
+                break;
+            }
+        }
+
+
         model.addAttribute("product", product);
+        model.addAttribute("commented", commented);
+        model.addAttribute("user", user);
 
         return "productPage";
     }

@@ -117,25 +117,34 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void editUser(User user, String username, String password, String email) {
+    public void editUser(User user, User newUser) {
 
-        boolean isEmailChanged = (email != null && !email.equals(user.getEmail()))
-                || (user.getEmail() != null && !user.getEmail().equals(email));
+        boolean isEmailChanged = (newUser.getEmail() != null && !newUser.getEmail().equals(user.getEmail()))
+                || (user.getEmail() != null && !user.getEmail().equals(newUser.getEmail()));
 
         if (isEmailChanged) {
-            user.setEmail(email);
-            if (!StringUtils.isEmpty(email)) {
+            user.setEmail(newUser.getEmail());
+            if (!StringUtils.isEmpty(newUser.getEmail())) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
 
-        if (!StringUtils.isEmpty(password)) {
-            user.setPassword(passwordEncoder.encode(password));
+        if (!StringUtils.isEmpty(newUser.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
 
-        if (!StringUtils.isEmpty(username)) {
-            user.setUsername(username);
+        if (!StringUtils.isEmpty(newUser.getUsername())) {
+            user.setUsername(newUser.getUsername());
         }
+
+        if (!StringUtils.isEmpty(newUser.getAddress())) {
+            user.setAddress(newUser.getAddress());
+        }
+
+        if (!StringUtils.isEmpty(newUser.getPhone())) {
+            user.setPhone(newUser.getPhone());
+        }
+
         userRepo.save(user);
 
         if (isEmailChanged) {

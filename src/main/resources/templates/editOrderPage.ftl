@@ -28,9 +28,9 @@
 
             <div id="address" class="mt-3">
                 <label for="address_inp">Address</label>
-                <input type="text" id="address_inp" class="form-control-sm col-sm-5" name="address">
+                <input type="text" id="address_inp" class="form-control-sm col-sm-5" name="address"
+                       value="<#if user.address??>${user.address}</#if>">
             </div>
-
 
             <table class="table table-striped table-hover ">
                 <thead>

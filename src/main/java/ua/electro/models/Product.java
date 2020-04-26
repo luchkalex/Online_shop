@@ -35,7 +35,6 @@ public class Product implements Serializable {
         this.description = product.description;
         this.price = product.price;
         this.discount = product.discount;
-        this.rating = product.rating;
         this.popularity = product.popularity;
         this.photo = product.photo;
         this.quantity = quantity;
@@ -48,6 +47,7 @@ public class Product implements Serializable {
         this.wishlist_users = product.wishlist_users;
         this.cartItems = product.cartItems;
         this.valuesOfFeatures = product.valuesOfFeatures;
+        this.statistic = product.statistic;
     }
 
     @NonNull
@@ -66,14 +66,17 @@ public class Product implements Serializable {
 
     private int discount;
 
-    private float rating;
-
     private float popularity;
 
     private String photo;
 
     @Transient
     private Long quantity;
+
+    private float rating;
+
+    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private ProductStatistic statistic;
 
     //    @NonNull
     @DateTimeFormat(pattern = "yyyy-mm-dd")
@@ -97,6 +100,8 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PriceHistory> priceHistories;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
