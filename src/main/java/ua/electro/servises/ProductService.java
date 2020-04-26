@@ -140,6 +140,8 @@ public class ProductService {
         return productFilter;
     }
 
+    // FIXME: 4/26/20 Wrong logic of filtering. If we have two screen size 1000x2000 and 2000x4000
+    //  we find only products that have first AND second one
     public List<Product> filterWithFeatures(List<Long> features_id, List<Product> products) {
         /*Filtering by features*/
         if (features_id != null) {

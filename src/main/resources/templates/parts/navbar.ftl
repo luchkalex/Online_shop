@@ -47,6 +47,19 @@
             </#if>
 
         </ul>
+
+        <form action="/products/catalog">
+            <div class="input-group">
+                <label for="title"></label>
+                <input type="text" name="title" id="title" placeholder="Search"
+                       class="bg-dark text-white border-dark rounded">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <div class="input-group-append">
+                    <button type="submit" class="btn-dark btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </form>
+
         <li class="nav-item">
             <a class="nav-link" href="/users/cart" style="font-size: 25px; color: orange"><i
                         class="fas fa-shopping-cart"></i></a>

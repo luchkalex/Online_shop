@@ -5,11 +5,10 @@
     <div class="container mt-5">
         <h4 class="text-sm-center">Cart</h4>
 
-        <#--TODO: Add form get request to order-->
-        <a href="/users/order_maker">Make order</a>
+        <a href="/users/order_maker" class="btn btn-primary">Make order</a>
 
         <#if cartError??>
-            <div class="invalid-feedback">
+            <div class="alert alert-danger">
                 ${cartError}
             </div>
         </#if>
@@ -57,7 +56,7 @@
 
             <#else >
                 <tr>
-                    <td>No products</td>
+                    <span>No products</span>
                 </tr>
             </#list>
             </tbody>

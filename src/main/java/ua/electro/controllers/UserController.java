@@ -170,9 +170,7 @@ public class UserController {
             @ModelAttribute("session_user") User session_user,
             Model model) {
 
-        // TODO: 4/22/20 Check on empty cart
         user = userService.getActualUser(user, session_user);
-
 
         model.addAttribute("user", user);
 

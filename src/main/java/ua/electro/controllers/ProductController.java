@@ -192,6 +192,7 @@ public class ProductController {
 
     // FIXME: 4/26/20 Rating of every product 0.0
     // FIXME: 4/26/20 After deleting product from cart displays "in cart"
+    // FIXME: 4/26/20 When filters by features and
     @GetMapping("/catalog")
     public String showCatalog(
             @AuthenticationPrincipal User user,

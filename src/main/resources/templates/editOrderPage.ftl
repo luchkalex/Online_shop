@@ -24,8 +24,6 @@
                 </select>
             </div>
 
-            <#--TODO: Add value of address from user-->
-
             <div id="address" class="mt-3">
                 <label for="address_inp">Address</label>
                 <input type="text" id="address_inp" class="form-control-sm col-sm-5" name="address"
