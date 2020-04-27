@@ -52,6 +52,4 @@ public class OrderOfProduct implements Serializable {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
-
-
 }

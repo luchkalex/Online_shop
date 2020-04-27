@@ -7,6 +7,8 @@ import ua.electro.models.*;
 import ua.electro.repos.IncomeRepo;
 import ua.electro.repos.ProductRepo;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @Service
@@ -17,9 +19,12 @@ public class ProductService {
 
     private final IncomeRepo incomeRepo;
 
-    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo) {
+    private final EntityManager entityManager;
+
+    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo, EntityManager entityManager) {
         this.productRepo = productRepo;
         this.incomeRepo = incomeRepo;
+        this.entityManager = entityManager;
     }
 
 
@@ -32,52 +37,39 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    /*FIXME: It is very bad practice*/
     public List<Product> findWithFilter(ProductFilter productFilter) {
-        if (productFilter.getCategory() == null && productFilter.getProductStatus() == null) {
-            return productRepo.findWithFilter(
-                    productFilter.getIdMin(),
-                    productFilter.getIdMax(),
-                    productFilter.getTitle(),
-                    productFilter.getPriceMin(),
-                    productFilter.getPriceMax(),
-                    productFilter.getQuantityMin(),
-                    productFilter.getQuantityMax()
-            );
-        } else if (productFilter.getCategory() == null && productFilter.getProductStatus() != null) {
-            return productRepo.findWithFilterStatus(
-                    productFilter.getIdMin(),
-                    productFilter.getIdMax(),
-                    productFilter.getTitle(),
-                    productFilter.getPriceMin(),
-                    productFilter.getPriceMax(),
-                    productFilter.getQuantityMin(),
-                    productFilter.getQuantityMax(),
-                    productFilter.getProductStatus().getId()
-            );
-        } else if (productFilter.getProductStatus() == null && productFilter.getCategory() != null) {
-            return productRepo.findWithFilterCategory(
-                    productFilter.getIdMin(),
-                    productFilter.getIdMax(),
-                    productFilter.getTitle(),
-                    productFilter.getPriceMin(),
-                    productFilter.getPriceMax(),
-                    productFilter.getQuantityMin(),
-                    productFilter.getQuantityMax(),
-                    productFilter.getCategory().getId()
-            );
-        } else {
-            return productRepo.findWithFilterCategoryAndStatus(
-                    productFilter.getIdMin(),
-                    productFilter.getIdMax(),
-                    productFilter.getTitle(),
-                    productFilter.getPriceMin(),
-                    productFilter.getPriceMax(),
-                    productFilter.getQuantityMin(),
-                    productFilter.getQuantityMax(),
-                    productFilter.getCategory().getId(),
-                    productFilter.getProductStatus().getId());
+
+        String additionalFilter = "";
+
+        if (productFilter.getCategory() != null) {
+            additionalFilter = additionalFilter.concat("(p.category.id = " + productFilter.getCategory() + ") and ");
         }
+
+        if (productFilter.getProductStatus() != null) {
+            additionalFilter = additionalFilter.concat("(p.productStatus.id = " + productFilter.getProductStatus() + ") and ");
+        }
+
+        Query query = entityManager.createQuery(
+                "select new Product(p, q.quantity) " +
+                        "from Product p " +
+                        "left join QuantityOfProducts q on p.id = q.id " +
+                        "where " +
+                        additionalFilter +
+                        "(p.id between :idMin and :idMax) and " +
+                        "(p.title like concat('%', :title, '%')) and " +
+                        "(p.price between :priceMin and :priceMax) and " +
+                        "(q.quantity between :quantityMin and :quantityMax)");
+
+        query.setParameter("idMin", productFilter.getIdMin());
+        query.setParameter("idMax", productFilter.getIdMax());
+        query.setParameter("title", productFilter.getTitle());
+        query.setParameter("priceMin", productFilter.getPriceMin());
+        query.setParameter("priceMax", productFilter.getPriceMax());
+        query.setParameter("quantityMin", productFilter.getQuantityMin());
+        query.setParameter("quantityMax", productFilter.getQuantityMax());
+        query.setParameter("quantityMax", productFilter.getQuantityMax());
+
+        return query.getResultList();
     }
 
     public Long findMaxId() {
@@ -135,6 +127,14 @@ public class ProductService {
 
         if (productFilter.getTitle() == null) {
             productFilter.setTitle("");
+        }
+
+        if (productFilter.getCategory() != null && productFilter.getCategory() == -1) {
+            productFilter.setCategory(null);
+        }
+
+        if (productFilter.getProductStatus() != null && productFilter.getProductStatus() == -1) {
+            productFilter.setProductStatus(null);
         }
 
         return productFilter;

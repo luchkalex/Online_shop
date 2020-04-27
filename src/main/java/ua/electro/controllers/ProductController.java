@@ -208,6 +208,7 @@ public class ProductController {
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
 
+
         model.addAttribute("pf", productFilter);
         return "catalog";
     }
@@ -224,7 +225,7 @@ public class ProductController {
 
         val features = featuresService.findByCategory(category);
 
-        productFilter.setCategory(category);
+        productFilter.setCategory(category.getId());
 
         productFilter = productService.validate(productFilter);
 
@@ -239,6 +240,7 @@ public class ProductController {
         return "catalog";
     }
 
+
     @PostMapping("/category/{category_id}")
     public String getProductOfCategory(
             @AuthenticationPrincipal User user,
@@ -252,7 +254,7 @@ public class ProductController {
 
         productFilter = productService.validate(productFilter);
 
-        productFilter.setCategory(category);
+        productFilter.setCategory(category.getId());
 
         List<Product> products = productService.findWithFilter(productFilter);
 
@@ -287,7 +289,6 @@ public class ProductController {
                 break;
             }
         }
-
 
         model.addAttribute("product", product);
         model.addAttribute("commented", commented);

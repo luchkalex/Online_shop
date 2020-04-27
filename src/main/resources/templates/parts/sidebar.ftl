@@ -29,7 +29,7 @@
                 </li>
 
                 <li>
-                    <a href="#">Services</a>
+                    <a href="/control_panel/orders">Orders</a>
                 </li>
                 <li>
                     <a href="#">Contact Us</a>

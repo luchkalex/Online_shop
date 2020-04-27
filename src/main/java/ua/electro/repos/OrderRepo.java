@@ -6,11 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ua.electro.models.OrderOfProduct;
-import ua.electro.models.TypesOfDelivery;
-import ua.electro.models.TypesOfPayment;
-import ua.electro.models.User;
+import ua.electro.models.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -33,8 +31,25 @@ public interface OrderRepo extends JpaRepository<OrderOfProduct, Integer> {
     /*Order status with id = 2 - Canceled*/
     @Transactional
     @Modifying
-    @Query("update OrderOfProduct set orderStatuses = 2 where id= :order_id")
-    void cancelOrder(@Param("order_id") Long order_id);
+    @Query("update OrderOfProduct set orderStatuses = (select id from OrderStatuses where title = :status) where id= :order_id")
+    void setOrderStatus(
+            @Param("order_id") Long order_id,
+            @Param("status") String status);
 
     List<OrderOfProduct> findByUser(User user);
+
+    @Query("select max(o.orderDate) from OrderOfProduct o")
+    Date findMaxDate();
+
+    @Query("select max(o.total) from OrderOfProduct o")
+    Integer findMaxTotal();
+
+    @Query("select max(o.id) from OrderOfProduct o")
+    Long findMaxId();
+
+    @Query("select min(o.orderDate) from OrderOfProduct o")
+    Date findMinDate();
+
+    @Query("from OrderStatuses")
+    List<OrderStatuses> findAllStatuses();
 }

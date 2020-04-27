@@ -238,11 +238,18 @@ public class UserController {
         return "orderPage";
     }
 
-    @GetMapping("cancelOrder/{order_id}")
-    public String cancelOrder(@PathVariable("order_id") Long order_id) {
+    @GetMapping("{type}/{order_id}")
+    public String cancelOrder(
+            @PathVariable("order_id") Long order_id,
+            @PathVariable("type") String status) {
 
-        orderService.cancelOrder(order_id);
-        return "redirect:/users/profile";
+        orderService.setOrderStatus(order_id, status);
+
+        if (status.equals("Canceled")) {
+            return "redirect:/users/profile";
+        }
+
+        return "redirect:/control_panel/orders";
     }
 
     /*------------------------------Comments------------------------------*/

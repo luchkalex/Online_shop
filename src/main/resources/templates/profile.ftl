@@ -69,7 +69,9 @@
 
                     <td class="text-center">
                         <a href="/users/order/${order.id}" type="submit" class="btn btn-primary">More</a>
-                        <a href="/users/cancelOrder/${order.id}" type="submit" class="btn btn-danger">Cancel</a>
+                        <#if (order.orderStatuses.title = "Accepted") || (order.orderStatuses.title = "Awaiting confirmation")>
+                            <a href="/users/Canceled/${order.id}" type="submit" class="btn btn-danger">Cancel</a>
+                        </#if>
                     </td>
                 </tr>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>

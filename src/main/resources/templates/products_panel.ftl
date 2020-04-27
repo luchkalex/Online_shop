@@ -47,7 +47,7 @@
 
                             <td>
                                 <select class="custom-select" id="category_select" name="category">
-                                    <option value=''>Chose category</option>
+                                    <option value='-1'>Chose category</option>
                                     <#list categories as category>
                                         <option value=${category.id}>${category.title}</option>
                                     </#list>

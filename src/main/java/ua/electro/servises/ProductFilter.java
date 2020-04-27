@@ -2,12 +2,11 @@ package ua.electro.servises;
 
 import lombok.Getter;
 import lombok.Setter;
-import ua.electro.models.Category;
-import ua.electro.models.ProductStatuses;
 
 @Setter
 @Getter
 public class ProductFilter {
+
     private Long idMin;
     private Long idMax;
     private Integer priceMin;
@@ -15,12 +14,12 @@ public class ProductFilter {
     private Long quantityMin;
     private Long quantityMax;
     private String title;
-    private Category category;
-    private ProductStatuses productStatus;
+    private Long category;
+    private Long productStatus;
 
     public ProductFilter(String title, Long idMin, Long idMax, Integer priceMin,
                          Integer priceMax, Long quantityMin, Long quantityMax,
-                         Category category, ProductStatuses productStatus) {
+                         Long category, Long productStatus) {
 
         this.title = title;
         this.idMin = idMin;

@@ -6,10 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ua.electro.servises.CategoryService;
-import ua.electro.servises.ProductFilter;
-import ua.electro.servises.ProductService;
-import ua.electro.servises.StatusesService;
+import ua.electro.servises.*;
+
+import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping("/control_panel")
@@ -19,11 +18,18 @@ public class ControlPanelController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final StatusesService statusesService;
+    private final OrderService orderService;
 
-    public ControlPanelController(ProductService productService, CategoryService categoryService, StatusesService statusesService) {
+    private final String pattern = "yy-MM-dd HH:mm";
+
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+
+
+    public ControlPanelController(ProductService productService, CategoryService categoryService, StatusesService statusesService, OrderService orderService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.statusesService = statusesService;
+        this.orderService = orderService;
     }
 
     /*TODO: Add validation on Number format (max and min values)*/
@@ -44,4 +50,21 @@ public class ControlPanelController {
 
         return "products_panel";
     }
+
+    @GetMapping("/orders")
+    public String getOrders(
+            @ModelAttribute("orderFilter") OrderFilter orderFilter,
+            Model model) {
+
+        orderFilter = orderService.validate(orderFilter);
+
+        model.addAttribute("statuses", orderService.findAllStatuses());
+        model.addAttribute("payments", orderService.findAllTypesOfPayment());
+        model.addAttribute("deliveries", orderService.findAllTypesOfDelivery());
+        model.addAttribute("orders", orderService.findWithFilter(orderFilter));
+        model.addAttribute("of", orderFilter);
+
+        return "orders_panel";
+    }
+
 }
