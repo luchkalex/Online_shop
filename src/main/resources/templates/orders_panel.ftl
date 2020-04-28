@@ -126,11 +126,19 @@
 
                                 <td class="text-center">${order.orderDate!'No date'}</td>
                                 <td>
-                                    <a href="/users/order/${order.id}" type="submit" class="btn btn-primary">View</a>
+                                    <a href="/users/order/${order.id}" type="submit"
+                                       class="btn btn-primary btn-middle-size">View</a>
                                     <#if order.orderStatuses.title = "Awaiting confirmation">
                                         <a href="/users/Accepted/${order.id}" type="submit"
-                                           class="btn btn-info">Accept</a>
-                                        <a href="/users/Rejected/${order.id}" type="submit" class="btn btn-danger">Reject</a>
+                                           class="btn btn-info btn-middle-size mt-2">Accept</a>
+
+                                        <a href="/users/Rejected/${order.id}" type="submit"
+                                           class="btn btn-danger btn-middle-size mt-2">Reject</a>
+                                    </#if>
+
+                                    <#if order.orderStatuses.title = "Accepted" || order.orderStatuses.title = "Rejected">
+                                        <a href="/users/Completed/${order.id}" type="submit"
+                                           class="btn btn-info btn-middle-size mt-2">Complete</a>
                                     </#if>
                                 </td>
                             </tr>

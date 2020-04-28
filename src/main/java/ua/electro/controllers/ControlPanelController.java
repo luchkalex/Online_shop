@@ -19,17 +19,19 @@ public class ControlPanelController {
     private final CategoryService categoryService;
     private final StatusesService statusesService;
     private final OrderService orderService;
+    private final StatService statService;
 
     private final String pattern = "yy-MM-dd HH:mm";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
 
 
-    public ControlPanelController(ProductService productService, CategoryService categoryService, StatusesService statusesService, OrderService orderService) {
+    public ControlPanelController(ProductService productService, CategoryService categoryService, StatusesService statusesService, OrderService orderService, StatService statService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.statusesService = statusesService;
         this.orderService = orderService;
+        this.statService = statService;
     }
 
     /*TODO: Add validation on Number format (max and min values)*/
@@ -65,6 +67,15 @@ public class ControlPanelController {
         model.addAttribute("of", orderFilter);
 
         return "orders_panel";
+    }
+
+    @GetMapping("/sales_stat")
+    public String getSalesStat(
+            Model model) {
+
+        model.addAttribute("sales_stat", statService.findAllSalesStat());
+
+        return "sales_stat_panel";
     }
 
 }

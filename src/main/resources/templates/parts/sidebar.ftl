@@ -31,8 +31,9 @@
                 <li>
                     <a href="/control_panel/orders">Orders</a>
                 </li>
+
                 <li>
-                    <a href="#">Contact Us</a>
+                    <a href="/control_panel/sales_stat">Sales statistic</a>
                 </li>
             </ul>
         </nav>
