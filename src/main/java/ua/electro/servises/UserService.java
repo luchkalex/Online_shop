@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import ua.electro.models.Comment;
 import ua.electro.models.Role;
 import ua.electro.models.User;
+import ua.electro.repos.CommentRepo;
 import ua.electro.repos.UserRepo;
+import ua.electro.servises.accessoryServices.MailSender;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,15 +24,15 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
-
     private final MailSender mailSender;
-
     public final PasswordEncoder passwordEncoder;
+    private final CommentRepo commentRepo;
 
-    public UserService(UserRepo userRepo, MailSender mainSender, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepo, MailSender mainSender, PasswordEncoder passwordEncoder, CommentRepo commentRepo) {
         this.userRepo = userRepo;
         this.mailSender = mainSender;
         this.passwordEncoder = passwordEncoder;
+        this.commentRepo = commentRepo;
     }
 
     @Override
@@ -183,5 +186,7 @@ public class UserService implements UserDetailsService {
         userRepo.deactivateUser(user_id);
     }
 
-
+    public void saveComment(Comment comment) {
+        commentRepo.save(comment);
+    }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import ua.electro.models.Category;
 
 @Repository
-public interface CategoryRepo extends JpaRepository<Category, Integer> {
+public interface CategoryRepo extends JpaRepository<Category, Long> {
 
     Category findOneById(Long category_id);
 

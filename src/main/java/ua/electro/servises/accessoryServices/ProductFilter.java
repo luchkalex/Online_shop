@@ -1,4 +1,4 @@
-package ua.electro.servises;
+package ua.electro.servises.accessoryServices;
 
 import lombok.Getter;
 import lombok.Setter;

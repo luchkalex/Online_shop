@@ -1,5 +1,5 @@
 <#macro sidebar>
-    <div class="wrapper">
+    <div class="wrapper sidebar">
         <nav id="sidebar">
 
             <div class="sidebar-header">
@@ -29,12 +29,18 @@
                 </li>
 
                 <li>
+                    <a href="/control_panel/categories">Categories</a>
+                </li>
+
+                <li>
                     <a href="/control_panel/orders">Orders</a>
                 </li>
 
                 <li>
                     <a href="/control_panel/sales_stat">Sales statistic</a>
                 </li>
+
+
             </ul>
         </nav>
 

@@ -4,7 +4,10 @@ package ua.electro.servises;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.electro.models.*;
+import ua.electro.repos.DeliveryRepo;
 import ua.electro.repos.OrderRepo;
+import ua.electro.repos.PaymentRepo;
+import ua.electro.servises.accessoryServices.OrderFilter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -15,10 +18,14 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepo orderRepo;
+    private final DeliveryRepo deliveryRepo;
+    private final PaymentRepo paymentRepo;
     private final EntityManager entityManager;
 
-    public OrderService(OrderRepo orderRepo, EntityManager entityManager) {
+    public OrderService(OrderRepo orderRepo, DeliveryRepo deliveryRepo, PaymentRepo paymentRepo, EntityManager entityManager) {
         this.orderRepo = orderRepo;
+        this.deliveryRepo = deliveryRepo;
+        this.paymentRepo = paymentRepo;
         this.entityManager = entityManager;
     }
 
@@ -32,11 +39,11 @@ public class OrderService {
     }
 
     public TypesOfPayment findOneTypeOfPaymentById(Long typeOfPayment) {
-        return orderRepo.findOneTypeOfPaymentById(typeOfPayment);
+        return paymentRepo.findOneById(typeOfPayment);
     }
 
     public TypesOfDelivery findOneDeliveryById(Long delivery_id) {
-        return orderRepo.findOneDeliveryById(delivery_id);
+        return deliveryRepo.findOneById(delivery_id);
     }
 
     public void save(OrderOfProduct order) {

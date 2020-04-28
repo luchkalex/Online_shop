@@ -10,7 +10,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.electro.models.*;
-import ua.electro.servises.*;
+import ua.electro.servises.CategoryService;
+import ua.electro.servises.ProductService;
+import ua.electro.servises.UserService;
+import ua.electro.servises.accessoryServices.ProductFilter;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -26,13 +29,11 @@ public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final FeatureService featuresService;
     private final UserService userService;
 
-    public ProductController(ProductService productService, CategoryService categoryService, FeatureService featuresService, UserService userService) {
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService) {
         this.productService = productService;
         this.categoryService = categoryService;
-        this.featuresService = featuresService;
         this.userService = userService;
     }
 
@@ -57,7 +58,7 @@ public class ProductController {
             @RequestParam("category_id") Integer category_id,
             Model model) {
 
-        val features = featuresService.findByCategory(categoryService.findOneById(Long.valueOf(category_id)));
+        val features = categoryService.findFeatureOfCategoryByCategory(categoryService.findOneById(Long.valueOf(category_id)));
 
         model.addAttribute("features_of_cat", features);
         return "addProduct";
@@ -76,7 +77,7 @@ public class ProductController {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
-        product.setValuesOfFeatures(featuresService.getSetValuesOfFeatures(features_id));
+        product.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
 
         if (category != null) {
             product.setCategory(category);
@@ -109,7 +110,7 @@ public class ProductController {
             @PathVariable("product") @ModelAttribute Product product,
             Model model) {
 
-        val features = featuresService.findByCategory(product.getCategory());
+        val features = categoryService.findFeatureOfCategoryByCategory(product.getCategory());
 
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "edit");
@@ -134,7 +135,7 @@ public class ProductController {
 
         product.getValuesOfFeatures().clear();
 
-        product.setValuesOfFeatures(featuresService.getSetValuesOfFeatures(features_id));
+        product.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
 
         if (category != null) {
             product.setCategory(category);
@@ -223,7 +224,7 @@ public class ProductController {
 
         val category = new Category(Long.valueOf(category_id));
 
-        val features = featuresService.findByCategory(category);
+        val features = categoryService.findFeatureOfCategoryByCategory(category);
 
         productFilter.setCategory(category.getId());
 
@@ -260,7 +261,7 @@ public class ProductController {
 
         products = productService.filterWithFeatures(features_id, products);
 
-        val features = featuresService.findByCategory(category);
+        val features = categoryService.findFeatureOfCategoryByCategory(category);
 
         model.addAttribute("cur_user", userService.getActualUser(user, session_user));
         model.addAttribute("products", products);

@@ -6,7 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.electro.models.*;
-import ua.electro.servises.*;
+import ua.electro.servises.CartService;
+import ua.electro.servises.OrderService;
+import ua.electro.servises.ProductService;
+import ua.electro.servises.UserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +30,12 @@ public class UserController {
     private final OrderService orderService;
     private final CartService cartService;
     private final ProductService productService;
-    private final CommentService commentService;
 
-    public UserController(UserService userService, OrderService orderService, CartService cartService, ProductService productService, CommentService commentService) {
+    public UserController(UserService userService, OrderService orderService, CartService cartService, ProductService productService) {
         this.userService = userService;
         this.orderService = orderService;
         this.cartService = cartService;
         this.productService = productService;
-        this.commentService = commentService;
     }
 
 
@@ -273,7 +274,7 @@ public class UserController {
         comment.setAuthor(user);
         comment.setProduct(productService.findOneById(product_id));
 
-        commentService.save(comment);
+        userService.saveComment(comment);
 
         model.addAttribute("product", productService.findOneById(product_id));
         return "redirect:/products/" + product_id;

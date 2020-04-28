@@ -1,5 +1,9 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
+html, body {
+    height: 100%;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background: #fafafa
@@ -45,6 +49,10 @@ a:focus {
     display: flex;
     width: 100%;
     align-items: stretch;
+}
+
+.sidebar {
+    height: 100% !important;
 }
 
 #sidebar {
@@ -254,4 +262,8 @@ input[type="range"]::-moz-range-track {
 
 .btn-middle-size {
     width: 100px;
+}
+
+.link-blue:hover {
+    color: dodgerblue !important;
 }

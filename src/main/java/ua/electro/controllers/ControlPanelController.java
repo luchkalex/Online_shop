@@ -6,9 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ua.electro.servises.*;
-
-import java.text.SimpleDateFormat;
+import ua.electro.servises.CategoryService;
+import ua.electro.servises.OrderService;
+import ua.electro.servises.ProductService;
+import ua.electro.servises.StatService;
+import ua.electro.servises.accessoryServices.OrderFilter;
+import ua.electro.servises.accessoryServices.ProductFilter;
 
 @Controller
 @RequestMapping("/control_panel")
@@ -17,19 +20,12 @@ public class ControlPanelController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
-    private final StatusesService statusesService;
     private final OrderService orderService;
     private final StatService statService;
 
-    private final String pattern = "yy-MM-dd HH:mm";
-
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-
-
-    public ControlPanelController(ProductService productService, CategoryService categoryService, StatusesService statusesService, OrderService orderService, StatService statService) {
+    public ControlPanelController(ProductService productService, CategoryService categoryService, OrderService orderService, StatService statService) {
         this.productService = productService;
         this.categoryService = categoryService;
-        this.statusesService = statusesService;
         this.orderService = orderService;
         this.statService = statService;
     }
@@ -45,8 +41,7 @@ public class ControlPanelController {
 
         model.addAttribute("products", productService.findWithFilter(productFilter));
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("statuses", statusesService.findAll());
-
+        model.addAttribute("statuses", productService.findAllProductStatuses());
 
         model.addAttribute("pf", productFilter);
 
@@ -76,6 +71,16 @@ public class ControlPanelController {
         model.addAttribute("sales_stat", statService.findAllSalesStat());
 
         return "sales_stat_panel";
+    }
+
+    @GetMapping("/categories")
+    public String getCategories(
+            Model model) {
+
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("features", categoryService.findAllFeatures());
+
+        return "category_panel";
     }
 
 }

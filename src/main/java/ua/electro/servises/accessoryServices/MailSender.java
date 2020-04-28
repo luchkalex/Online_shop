@@ -1,4 +1,4 @@
-package ua.electro.servises;
+package ua.electro.servises.accessoryServices;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

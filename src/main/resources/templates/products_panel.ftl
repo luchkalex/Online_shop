@@ -9,7 +9,7 @@
 
                 <h3>Products</h3>
 
-                <a href="/products/add_product" class="btn btn-info ml-auto">
+                <a href="/products/add_product_choice_category" class="btn btn-info ml-auto">
                     <i class="fas fa-plus-circle"></i>
                     <span class="ml-2">New product</span>
                 </a>

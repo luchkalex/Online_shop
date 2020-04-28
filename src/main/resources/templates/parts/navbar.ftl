@@ -10,37 +10,12 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-
-            <#if user?? && user.id??>
-                <li class="nav-item">
-                    <a class="nav-link" href="/main">Messages</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/users-messages/${currentUserId}">My messages</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/users/profile">Profile</a>
-                </li>
-            </#if>
 
             <li class="nav-item">
                 <a class="nav-link" href="/products/catalog">Catalog</a>
             </li>
 
             <#if isAdmin>
-                <li class="nav-item">
-                    <a class="nav-link" href="/users">User list</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/products/add_product_choice_category">Add product</a>
-                </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="/control_panel/products">Control panel</a>
                 </li>
@@ -71,6 +46,12 @@
                 <a class="nav-link btn btn-primary" href="/login">Login</a>
             </li>
         </#if>
-        <div class="navbar-text mx-3"><#if user?? && user.id??>${name}<#else>Please log in</#if></div>
+        <div class="navbar-text mx-3">
+            <#if user?? && user.id??>
+                <a class=" link-blue" href="/users/profile">${name}</a>
+            <#else>
+                Please log in
+            </#if>
+        </div>
     </div>
 </nav>

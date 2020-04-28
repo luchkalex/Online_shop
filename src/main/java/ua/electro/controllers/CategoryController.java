@@ -1,17 +1,18 @@
 package ua.electro.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ua.electro.models.Category;
 import ua.electro.servises.CategoryService;
 
-import java.util.List;
-
 
 @Controller // This means that this class is a Controller
-@RequestMapping(path = "/cat") // This means URL's start with /demo (after Application path)
+@PreAuthorize("hasAuthority('ADMIN')")
+@RequestMapping(path = "/categories") // This means URL's start with /demo (after Application path)
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -20,36 +21,40 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("/add_category")
+    public String addCategory(
+            @ModelAttribute("category") Category category) {
 
-    @GetMapping(path = "/add") // Map ONLY POST Requests
-    public @ResponseBody
-//    String addNewUser(@RequestParam String title) {
-    String addNewUser() {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        Category category = new Category();
-
-        category.setTitle("new cat");
         categoryService.save(category);
-        return "Saved";
+
+        return "redirect:/control_panel/categories";
     }
 
-    @GetMapping(path = "/byid")
-    public @ResponseBody
-    Category getCatById() {
-        // This returns a JSON or XML with the users
-        return categoryService.getCategoryByID(1);
+    @GetMapping("/edit_category")
+    public String editCategory(
+            @RequestParam("title") String title,
+            @RequestParam("category_id") Long category_id) {
+
+        Category category = categoryService.findOneById(category_id);
+
+        category.setTitle(title);
+
+        categoryService.save(category);
+
+        return "redirect:/control_panel/categories";
     }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody
-    List<Category> getAllCategories() {
-        return categoryService.getListCategories();
+    @GetMapping("/add_feature")
+    public String addFeature(
+            @RequestParam("category_id") Long category_id,
+            @RequestParam("feature_id") Long feature_id) {
+
+        Category category = categoryService.findOneById(category_id);
+
+//        category.setTitle(title);
+
+        categoryService.save(category);
+
+        return "redirect:/control_panel/categories";
     }
-//    public String getAll(){
-//        return "test";
-//    }
-
-
 }

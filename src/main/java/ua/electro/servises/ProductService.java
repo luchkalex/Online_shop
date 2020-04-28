@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.electro.models.*;
 import ua.electro.repos.IncomeRepo;
 import ua.electro.repos.ProductRepo;
+import ua.electro.repos.StatusesRepo;
+import ua.electro.servises.accessoryServices.ProductFilter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -18,12 +20,14 @@ public class ProductService {
     private final ProductRepo productRepo;
 
     private final IncomeRepo incomeRepo;
+    private final StatusesRepo statusesRepo;
 
     private final EntityManager entityManager;
 
-    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo, EntityManager entityManager) {
+    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo, StatusesRepo statusesRepo, EntityManager entityManager) {
         this.productRepo = productRepo;
         this.incomeRepo = incomeRepo;
+        this.statusesRepo = statusesRepo;
         this.entityManager = entityManager;
     }
 
@@ -160,5 +164,9 @@ public class ProductService {
             save(product);
         }
         return user;
+    }
+
+    public List<ProductStatuses> findAllProductStatuses() {
+        return statusesRepo.findAll();
     }
 }
