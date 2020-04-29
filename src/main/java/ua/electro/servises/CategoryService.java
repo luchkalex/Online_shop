@@ -43,6 +43,9 @@ public class CategoryService {
         return categoryRepo.findOneById(category_id);
     }
 
+    public void deleteById(Long category_id) {
+        categoryRepo.deleteById(category_id);
+    }
 
     /*------------------------Features------------------------------------*/
     public List<Feature> findAllFeatures() {
@@ -50,9 +53,29 @@ public class CategoryService {
     }
 
 
+    public Feature findFeatureById(Long feature_id) {
+        return featureRepo.findOneById(feature_id);
+    }
+
+    public void saveFeature(Feature feature) {
+        featureRepo.save(feature);
+    }
+
+    public void deleteFeatureById(Long feature_id) {
+        featureRepo.deleteById(feature_id);
+    }
+
+    public Feature findOneFeatureById(Long feature_id) {
+        return featureRepo.findOneById(feature_id);
+    }
+
     /*------------------------Feature of category------------------------*/
     public List<FeaturesOfCategory> findFeatureOfCategoryByCategory(Category category) {
         return featureOfCategoryRepo.findByCategory(category);
+    }
+
+    public void removeFeatureOfProductByCategoryAndFeature(Long category_id, Long feature_id) {
+        featureOfCategoryRepo.removeByCategoryIdAndFeatureId(category_id, feature_id);
     }
 
     /*------------------------Values of feature------------------------*/
@@ -68,6 +91,19 @@ public class CategoryService {
             features_id.forEach(feature_id -> valuesOfFeatures.add(findOneValueOfFeatureById(feature_id)));
         }
         return valuesOfFeatures;
+    }
+
+    public List<ValueOfFeature> findAllValuesOfFeatures() {
+        return valueOfFeatureRepo.findAll();
+    }
+
+
+    public void saveValueOfFeature(ValueOfFeature vof) {
+        valueOfFeatureRepo.save(vof);
+    }
+
+    public void removeValueById(Long value_id) {
+        valueOfFeatureRepo.deleteById(value_id);
     }
 
 }

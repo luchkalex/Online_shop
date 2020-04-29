@@ -7,23 +7,22 @@
 
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-                <h3>Categories</h3>
+                <h3>Features</h3>
 
 
-                <a href="#new-category" data-toggle="collapse" aria-expanded="false"
+                <a href="#new-feature" data-toggle="collapse" aria-expanded="false"
                    class="dropdown-toggle btn btn-info ml-auto">
                     <i class="fas fa-plus-circle"></i>
-                    <span class="ml-2">New category</span>
+                    <span class="ml-2">New Feature</span>
                 </a>
             </nav>
 
-            <div id="new-category" class="collapse mt-2">
-                <form action="/categories/add_category">
-                    <label for="category_title" class="mt-2">Title</label>
+            <div id="new-feature" class="collapse mt-2">
+                <form action="/features/add_feature">
+                    <label for="feature_title" class="mt-2">Title</label>
                     <input type="text" name="title"
                            class="form-control ${(titleError??)?string('is-invalid', '')} my-1 col-sm-4"
-                            <#--                           value="<#if category?? && !titleError??>${category.title}</#if>" placeholder="Enter title"-->
-                           id="category_title"/>
+                           id="feature_title"/>
                     <input type="submit" class="btn btn-info" value="Create">
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 </form>
@@ -38,77 +37,61 @@
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th class="text-center">Quantity of products</th>
                         <th class="text-center">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <#list categories as category>
+                    <#list features as feature>
                         <tr>
-                            <td>${category.title}</td>
-                            <td class="text-center">${category.products?size}</td>
+                            <td>${feature.title}</td>
+
                             <td class="text-center col-2">
 
-                                <a data-toggle="collapse" href="#editCategory${category.id}" role="button"
+                                <a data-toggle="collapse" href="#editFeature${feature.id}" role="button"
                                    aria-expanded="false" aria-controls="collapseExample">
                                     <i class="fas fa-edit"></i>
                                 </a>
 
-                                <a data-toggle="collapse" href="#addFeature${category.id}" role="button"
+                                <a data-toggle="collapse" href="#addValue${feature.id}" role="button"
                                    aria-expanded="false" aria-controls="collapseExample">
                                     <i class="fas fa-plus-circle" style="color: green"></i>
                                 </a>
 
-                                <a data-toggle="collapse" href="#deleteFeature${category.id}" role="button"
+                                <a data-toggle="collapse" href="#deleteValue${feature.id}" role="button"
                                    aria-expanded="false" aria-controls="collapseExample">
                                     <i class="fas fa-minus-circle" style="color: red"></i>
                                 </a>
 
-                                <a href="/categories/delete_category/${category.id}">
+                                <a href="/features/delete_feature/${feature.id}">
                                     <i class="fas fa-trash-alt" style="color: red"></i>
                                 </a>
 
-                                <div class="collapse" id="editCategory${category.id}">
-                                    <form action="/categories/edit_category">
-                                        <input type="hidden" value="${category.id}" name="category_id">
-                                        <input type="text" name="title" value="${category.title}">
+                                <div class="collapse" id="editFeature${feature.id}">
+                                    <form action="/features/edit_feature">
+                                        <input type="hidden" value="${feature.id}" name="feature_id">
+                                        <input type="text" name="title" value="${feature.title}">
 
                                         <input type="submit" class="btn btn-info" value="Save">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                     </form>
                                 </div>
 
-                                <div class="collapse" id="addFeature${category.id}">
-                                    <form action="/categories/add_feature">
-                                        <input type="hidden" value="${category.id}" name="category_id">
+                                <div class="collapse" id="addValue${feature.id}">
+                                    <form action="/features/add_value">
+                                        <input type="hidden" value="${feature.id}" name="feature_id">
 
-                                        <select class="custom-select" name="feature_id">
-                                            <#list features as feature>
-                                                <#assign display = true>
-                                                <#list category.featuresOfCategory as foc>
-                                                    <#if foc.feature = feature>
-                                                        <#assign display = false>
-                                                    </#if>
-                                                </#list>
-
-                                                <#if display>
-                                                    <option value="${feature.id}">${feature.title}</option>
-                                                </#if>
-                                            </#list>
-                                        </select>
+                                        <input type="text" name="value_title">
 
                                         <input type="submit" class="btn btn-info" value="Add">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                     </form>
                                 </div>
 
-                                <div class="collapse" id="deleteFeature${category.id}">
+                                <div class="collapse" id="deleteValue${feature.id}">
                                     <form action="/categories/delete_feature">
-                                        <input type="hidden" value="${category.id}" name="category_id">
-
-                                        <select class="custom-select" name="feature_id">
-                                            <#list category.featuresOfCategory as foc>
-                                                <option value="${foc.feature.id}">${foc.feature.title}</option>
+                                        <select class="custom-select" name="value_id">
+                                            <#list feature.valuesOfFeature as value>
+                                                <option value="${value.id}">${value.title}</option>
                                             </#list>
                                         </select>
 

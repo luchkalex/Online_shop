@@ -24,6 +24,6 @@ public class ProductStatuses implements Serializable {
     @NotNull(message = "Title can't be empty")
     private String title;
 
-    @OneToMany(mappedBy = "productStatus", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productStatus", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Product> products;
 }

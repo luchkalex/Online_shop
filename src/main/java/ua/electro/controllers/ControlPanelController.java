@@ -83,4 +83,15 @@ public class ControlPanelController {
         return "category_panel";
     }
 
+    @GetMapping("/features")
+    public String getFeatures(
+            Model model) {
+
+        model.addAttribute("features", categoryService.findAllFeatures());
+        model.addAttribute("values", categoryService.findAllValuesOfFeatures());
+
+        return "features_panel";
+    }
+
+
 }

@@ -33,6 +33,10 @@
                 </li>
 
                 <li>
+                    <a href="/control_panel/features">Features</a>
+                </li>
+
+                <li>
                     <a href="/control_panel/orders">Orders</a>
                 </li>
 

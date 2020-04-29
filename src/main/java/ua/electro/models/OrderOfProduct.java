@@ -27,18 +27,18 @@ public class OrderOfProduct implements Serializable {
     @NotBlank(message = "Address can't be empty")
     private String address;
 
-    private Integer total;
+    private float total;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_status_id")
+    @JoinColumn(name = "order_status")
     private OrderStatuses orderStatuses;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "type_of_payment_id")
+    @JoinColumn(name = "type_of_payment")
     private TypesOfPayment typeOfPayment;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "type_of_delivery_id")
+    @JoinColumn(name = "type_of_delivery")
     private TypesOfDelivery typesOfDelivery;
 
     @ManyToOne(fetch = FetchType.EAGER)

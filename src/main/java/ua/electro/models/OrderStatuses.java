@@ -22,7 +22,7 @@ public class OrderStatuses implements Serializable {
     @NonNull
     private String title;
 
-    @OneToMany(mappedBy = "orderStatuses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderStatuses", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<OrderOfProduct> orders;
 
 }

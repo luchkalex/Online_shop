@@ -57,40 +57,11 @@ public class User implements UserDetails, Serializable {
     @Length(max = 13, message = "Phone number is too long (max - 13 symbols)")
     private String phone;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Message> messages = new HashSet<>();
-
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<OrderOfProduct> orders = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "channel_id")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")
-            }
-    )
-    private Set<User> subscribers = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "subscriber_id")},
-            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
-    )
-    private Set<User> subscriptions = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "wishlist_items",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "product_id")
-            }
-    )
-    private Set<Product> wishlist_products = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();

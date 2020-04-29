@@ -71,13 +71,15 @@ public class ProductController {
             @RequestParam("category_id") Integer category_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
-            @RequestParam List<Long> features_id,
+            @RequestParam(required = false) List<Long> features_id,
             @RequestParam("file") MultipartFile file,
             Model model) throws IOException {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
-        product.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
+        if (features_id != null) {
+            product.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
+        }
 
         if (category != null) {
             product.setCategory(category);
@@ -126,7 +128,7 @@ public class ProductController {
             @PathVariable("product_id") Long product_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
-            @RequestParam List<Long> features_id,
+            @RequestParam(required = false) List<Long> features_id,
             /*TODO: Add file validation on (Type, size, ect)*/
             @RequestParam("file") MultipartFile file,
             Model model) throws IOException {

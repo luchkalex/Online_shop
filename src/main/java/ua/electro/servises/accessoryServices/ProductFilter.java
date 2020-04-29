@@ -9,16 +9,16 @@ public class ProductFilter {
 
     private Long idMin;
     private Long idMax;
-    private Integer priceMin;
-    private Integer priceMax;
+    private Float priceMin;
+    private Float priceMax;
     private Long quantityMin;
     private Long quantityMax;
     private String title;
     private Long category;
     private Long productStatus;
 
-    public ProductFilter(String title, Long idMin, Long idMax, Integer priceMin,
-                         Integer priceMax, Long quantityMin, Long quantityMax,
+    public ProductFilter(String title, Long idMin, Long idMax, Float priceMin,
+                         Float priceMax, Long quantityMin, Long quantityMax,
                          Long category, Long productStatus) {
 
         this.title = title;

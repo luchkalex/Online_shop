@@ -79,7 +79,7 @@ public class ProductService {
         return productRepo.findOneByMaxId();
     }
 
-    public Integer findMaxPrice() {
+    public Float findMaxPrice() {
         return productRepo.findMaxPrice();
     }
 
@@ -125,7 +125,7 @@ public class ProductService {
         }
 
         if (productFilter.getPriceMin() == null) {
-            productFilter.setPriceMin(0);
+            productFilter.setPriceMin(0f);
         }
 
         if (productFilter.getTitle() == null) {

@@ -14,8 +14,8 @@ public class OrderFilter {
     private Long idMin;
     private Long idMax;
     private String username;
-    private Integer totalMin;
-    private Integer totalMax;
+    private Float totalMin;
+    private Float totalMax;
     private Long payment;
     private Long delivery;
     private String address;
@@ -28,8 +28,8 @@ public class OrderFilter {
 
     public OrderFilter(
             Long idMin, Long idMax,
-            String username, Integer totalMin,
-            Integer totalMax, Long payment,
+            String username, Float totalMin,
+            Float totalMax, Long payment,
             Long delivery, String address,
             Long status, String dateMin_str,
             String dateMax_str) throws ParseException {

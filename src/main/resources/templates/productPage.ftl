@@ -11,9 +11,7 @@
                 <#if product.photo??>
                     <img src="/img/${product.photo}" alt="Image" class="product-big-image">
                 <#else >
-                    <a href="/products/${product.category.id}">
-                        <img src="/img/default.jpeg" alt="Image" class="product-big-image">
-                    </a>
+                    <img src="/img/default.jpeg" alt="Image" class="product-big-image">
                 </#if>
             </div>
             <div class="col">
@@ -34,10 +32,13 @@
 
                 <span class="ml-3 text-danger">${product.productStatus.title}</span>
 
-                <p>${product.description}</p>
+                <#if product.description??>
+                    <p>${product.description}</p>
+                </#if>
 
-                <span>Category: ${product.category.title}</span>
-
+                <#if product.category??>
+                    <span>Category: ${product.category.title}</span>
+                </#if>
 
                 <div class="mt-2">
                     <#assign inCart = false>

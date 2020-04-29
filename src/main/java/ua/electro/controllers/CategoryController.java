@@ -2,11 +2,9 @@ package ua.electro.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.electro.models.Category;
+import ua.electro.models.FeaturesOfCategory;
 import ua.electro.servises.CategoryService;
 
 
@@ -27,7 +25,7 @@ public class CategoryController {
 
         categoryService.save(category);
 
-        return "redirect:/control_panel/categories";
+        return "redirect:/control_panel/features";
     }
 
     @GetMapping("/edit_category")
@@ -51,10 +49,34 @@ public class CategoryController {
 
         Category category = categoryService.findOneById(category_id);
 
-//        category.setTitle(title);
+        FeaturesOfCategory foc = new FeaturesOfCategory();
+        foc.setCategory(category);
+        foc.setFeature(categoryService.findFeatureById(feature_id));
+
+        category.getFeaturesOfCategory().add(foc);
 
         categoryService.save(category);
 
         return "redirect:/control_panel/categories";
     }
+
+    @GetMapping("/delete_feature")
+    public String deleteFeature(
+            @RequestParam("category_id") Long category_id,
+            @RequestParam("feature_id") Long feature_id) {
+
+        categoryService.removeFeatureOfProductByCategoryAndFeature(category_id, feature_id);
+
+        return "redirect:/control_panel/categories";
+    }
+
+    @GetMapping("/delete_category/{category_id}")
+    public String deleteCategory(
+            @PathVariable("category_id") Long category_id) {
+
+        categoryService.deleteById(category_id);
+
+        return "redirect:/control_panel/categories";
+    }
+
 }

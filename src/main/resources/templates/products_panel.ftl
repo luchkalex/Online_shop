@@ -96,10 +96,12 @@
                                 <td>
                                     <a href="/products/edit/${product.id}"><i class="fas fa-edit"></i></a>
                                     <a data-toggle="collapse" href="#quantityInput${product.id}" role="button"
-                                       aria-expanded="false" aria-controls="collapseExample"><i
-                                                class="fas fa-plus-circle" style="color: green"></i></a>
-                                    <a href="/products/delete/${product.id}"><i class="fas fa-minus-circle"
-                                                                                style="color: red"></i></a>
+                                       aria-expanded="false" aria-controls="collapseExample">
+                                        <i class="fas fa-plus-circle" style="color: green"></i>
+                                    </a>
+                                    <a href="/products/delete/${product.id}">
+                                        <i class="fas fa-trash-alt" style="color: red"></i>
+                                    </a>
 
                                     <#--FIXME: First product in list haven't form element-->
                                     <div class="collapse" id="quantityInput${product.id}">

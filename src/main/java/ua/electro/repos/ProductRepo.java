@@ -19,7 +19,7 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
     Long findOneByMaxId();
 
     @Query("select max(p.price) from Product p")
-    Integer findMaxPrice();
+    Float findMaxPrice();
 
     @Query("select max(q.quantity) from QuantityOfProducts q")
     Long findMaxQuantity();

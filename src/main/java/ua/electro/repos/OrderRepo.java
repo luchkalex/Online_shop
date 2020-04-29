@@ -36,7 +36,7 @@ public interface OrderRepo extends JpaRepository<OrderOfProduct, Integer> {
     Date findMaxDate();
 
     @Query("select max(o.total) from OrderOfProduct o")
-    Integer findMaxTotal();
+    Float findMaxTotal();
 
     @Query("select max(o.id) from OrderOfProduct o")
     Long findMaxId();

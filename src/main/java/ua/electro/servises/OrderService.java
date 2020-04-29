@@ -69,11 +69,22 @@ public class OrderService {
 
     public OrderFilter validate(OrderFilter orderFilter) {
         if (orderFilter.getTotalMax() == null) {
-            orderFilter.setTotalMax(findMaxTotal());
+
+            Float maxTotal = findMaxTotal();
+            if (maxTotal != null) {
+                orderFilter.setTotalMax(maxTotal);
+            } else {
+                orderFilter.setTotalMax(0f);
+            }
         }
 
         if (orderFilter.getIdMax() == null) {
-            orderFilter.setIdMax(findMaxId());
+            Long maxId = findMaxId();
+            if (maxId != null) {
+                orderFilter.setIdMax(maxId);
+            } else {
+                orderFilter.setIdMax(0L);
+            }
         }
 
         if (orderFilter.getDateMax() == null) {
@@ -85,7 +96,7 @@ public class OrderService {
         }
 
         if (orderFilter.getTotalMin() == null) {
-            orderFilter.setTotalMin(0);
+            orderFilter.setTotalMin(0f);
         }
 
         if (orderFilter.getDateMin() == null) {
@@ -127,7 +138,7 @@ public class OrderService {
         return orderRepo.findMaxId();
     }
 
-    private Integer findMaxTotal() {
+    private Float findMaxTotal() {
         return orderRepo.findMaxTotal();
     }
 

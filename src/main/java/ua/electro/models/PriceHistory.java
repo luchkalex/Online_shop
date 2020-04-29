@@ -25,7 +25,7 @@ public class PriceHistory implements Serializable {
     private Product product;
 
 
-    private int price;
+    private float price;
 
     private int discount;
 

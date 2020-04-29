@@ -44,7 +44,6 @@ public class Product implements Serializable {
         this.outcomes = product.outcomes;
         this.incomes = product.incomes;
         this.priceHistories = product.priceHistories;
-        this.wishlist_users = product.wishlist_users;
         this.cartItems = product.cartItems;
         this.valuesOfFeatures = product.valuesOfFeatures;
         this.statistic = product.statistic;
@@ -62,7 +61,7 @@ public class Product implements Serializable {
 
     //    @Pattern(regexp = "\\d{1,6}", message = "Wrong price")
     @NotNull(message = "Price can't be empty")
-    private Integer price;
+    private float price;
 
     private int discount;
 
@@ -84,17 +83,17 @@ public class Product implements Serializable {
     private Date release_date;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category")
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_status_id")
+    @JoinColumn(name = "product_status")
     private ProductStatuses productStatus;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Outcome> outcomes;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Income> incomes;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -102,15 +101,6 @@ public class Product implements Serializable {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "wishlist_items",
-            joinColumns = {@JoinColumn(name = "product_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")
-            }
-    )
-    private Set<User> wishlist_users = new HashSet<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
