@@ -31,7 +31,6 @@ public class ControlPanelController {
     }
 
     /*TODO: Add validation on Number format (max and min values)*/
-    /*FIXME: App failed on Filtering by category*/
     @GetMapping("/products")
     public String getProducts(
             @ModelAttribute("productFilter") ProductFilter productFilter,

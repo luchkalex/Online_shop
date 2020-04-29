@@ -17,9 +17,6 @@
             <div class="col">
                 <h3>${product.title}</h3>
 
-                <#--                        <label for="rating"><#if product.rating??>${product.rating}<#else >0</#if></label>-->
-
-
                 <div>
                     <label for="rating"><#if product.rating??>${product.rating}<#else >0</#if></label>
                     <i class="fas fa-star" style="color: orange"></i>
@@ -42,11 +39,9 @@
 
                 <div class="mt-2">
                     <#assign inCart = false>
-                    <#if user??>
-                        <#list user.cartItems as cartItem>
+                        <#list cartItems as cartItem>
                             <#if cartItem.product.id = product.id><#assign inCart = true ></#if>
                         </#list>
-                    </#if>
                     <#if inCart>
                         <a href="/users/cart" class="btn btn-secondary">In cart</a>
                     <#else >

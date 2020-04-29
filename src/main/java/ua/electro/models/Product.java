@@ -47,10 +47,12 @@ public class Product implements Serializable {
         this.cartItems = product.cartItems;
         this.valuesOfFeatures = product.valuesOfFeatures;
         this.statistic = product.statistic;
+        this.rating = product.rating;
     }
 
+
     @NonNull
-    @Length(max = 45, message = "Title is too long (max - 45 symbols)")
+    @Length(max = 255, message = "Title is too long (max - 45 symbols)")
     @NotBlank(message = "Title can't be empty!")
     private String title;
 
@@ -61,18 +63,18 @@ public class Product implements Serializable {
 
     //    @Pattern(regexp = "\\d{1,6}", message = "Wrong price")
     @NotNull(message = "Price can't be empty")
-    private float price;
+    private Float price;
 
-    private int discount;
+    private Float discount;
 
-    private float popularity;
+    private Float popularity;
 
     private String photo;
 
     @Transient
     private Long quantity;
 
-    private float rating;
+    private Float rating;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ProductStatistic statistic;

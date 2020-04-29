@@ -88,7 +88,7 @@
                                 </div>
 
                                 <div class="collapse" id="deleteValue${feature.id}">
-                                    <form action="/categories/delete_feature">
+                                    <form action="/features/delete_value">
                                         <select class="custom-select" name="value_id">
                                             <#list feature.valuesOfFeature as value>
                                                 <option value="${value.id}">${value.title}</option>

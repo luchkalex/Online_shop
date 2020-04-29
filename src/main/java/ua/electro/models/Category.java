@@ -24,7 +24,6 @@ public class Category implements Serializable {
         this.featuresOfCategory = category.featuresOfCategory;
     }
 
-    /*FIXME: Category.ID Integer -> Long (Controller get from form Integer can't parse into Long)*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NonNull

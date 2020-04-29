@@ -36,6 +36,7 @@
                        placeholder="Phone">
             </div>
 
+            <#--FIXME: DELEDE DOESN'T throw you in right place-->
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="/users/deleteAccount" class="btn btn-danger">Delete account</a>

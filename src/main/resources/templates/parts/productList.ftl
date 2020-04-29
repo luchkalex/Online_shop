@@ -8,7 +8,7 @@
                 <span style="display: block" class="text-center card-header">${product.productStatus.title}</span>
 
                 <div class="ml-2">
-                    <label for="rating"><#if product.rating??>${product.rating}<#else >0</#if></label>
+                    <label for="rating"><#if product.rating??>${product.rating}<#else >0suka</#if></label>
                     <i class="fas fa-star" style="color: orange"></i>
                 </div>
 
@@ -34,11 +34,9 @@
 
                 <div class="card-footer text-muted">
                     <#assign inCart = false>
-                    <#if user??>
-                        <#list user.cartItems as cartItem>
-                            <#if cartItem.product.id = product.id>Incart<#assign inCart = true ></#if>
-                        </#list>
-                    </#if>
+                    <#list cartItems as cartItem>
+                        <#if cartItem.product.id = product.id><#assign inCart = true ><#break ></#if>
+                    </#list>
                     <#if inCart>
                         <a href="/users/cart" class="btn btn-secondary">In cart</a>
                     <#else >

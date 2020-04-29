@@ -14,8 +14,6 @@ import java.util.Set;
 @Repository
 public interface CartRepo extends JpaRepository<CartItem, Integer> {
 
-    // TODO: 4/23/20 What if we can just implement method and validate this shit
-
     @Transactional
     @Modifying
     @Query("delete from CartItem c where c=:cart")

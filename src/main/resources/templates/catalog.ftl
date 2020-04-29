@@ -5,14 +5,13 @@
     <div class="container-1300">
         <div class="row mr-3">
             <div class="col-3 mt-3">
-                <form method="post">
-
-                    <#--TODO: For ordinar catalog make price filter-->
+                <form>
                     <input type="submit" class="btn btn-primary" value="Search">
                     <div><span>Price</span></div>
                     <div>
                         <label for="priceMin">From</label>
-                        <input type="text" placeholder="min" value="${pf.priceMin}" id="priceMin" name="priceMin"
+                        <input type="text" placeholder="min" value="${pf.priceMin?string["0"]}" id="priceMin"
+                               name="priceMin"
                                class="col-sm-4">
                         <label for="priceMax">To</label>
                         <input type="text" placeholder="max" value="${pf.priceMax?string["0"]}" id="priceMax"

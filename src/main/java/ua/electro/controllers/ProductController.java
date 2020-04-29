@@ -161,6 +161,21 @@ public class ProductController {
         return "redirect:/control_panel/products";
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/add_discount/{product_id}")
+    public String addDiscount(
+            @PathVariable("product_id") Long product_id,
+            @RequestParam("discount") Float discount) {
+
+        Product product = productService.findOneById(product_id);
+
+        product.setDiscount(discount);
+
+        productService.save(product);
+
+        return "redirect:/control_panel/products";
+    }
+
     /*-----------------------Delete product---------------------------*/
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -191,11 +206,6 @@ public class ProductController {
 
     /*-----------------------Catalog---------------------------*/
 
-    // TODO: 4/26/20 Trigger when we add comment we review product rating and set ave
-
-    // FIXME: 4/26/20 Rating of every product 0.0
-    // FIXME: 4/26/20 After deleting product from cart displays "in cart"
-    // FIXME: 4/26/20 When filters by features and
     @GetMapping("/catalog")
     public String showCatalog(
             @AuthenticationPrincipal User user,
@@ -207,7 +217,8 @@ public class ProductController {
 
         val products = productService.findWithFilter(productFilter);
 
-        model.addAttribute("user", userService.getActualUser(user, session_user));
+        user = userService.getActualUser(user, session_user);
+        model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
 
@@ -221,54 +232,29 @@ public class ProductController {
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @PathVariable("category_id") Integer category_id,
-            @ModelAttribute("productFilter") ProductFilter productFilter,
-            Model model) {
-
-        val category = new Category(Long.valueOf(category_id));
-
-        val features = categoryService.findFeatureOfCategoryByCategory(category);
-
-        productFilter.setCategory(category.getId());
-
-        productFilter = productService.validate(productFilter);
-
-        val products = productService.findWithFilter(productFilter);
-
-        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
-        model.addAttribute("products", products);
-        model.addAttribute("features_of_cat", features);
-        model.addAttribute("type", "category");
-        model.addAttribute("cur_category", category);
-        model.addAttribute("pf", productFilter);
-        return "catalog";
-    }
-
-
-    @PostMapping("/category/{category_id}")
-    public String getProductOfCategory(
-            @AuthenticationPrincipal User user,
-            @ModelAttribute("session_user") User session_user,
-            @PathVariable("category_id") Integer category_id,
             @RequestParam(required = false) List<Long> features_id,
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
         val category = new Category(Long.valueOf(category_id));
 
-        productFilter = productService.validate(productFilter);
+        val features = categoryService.findFeatureOfCategoryByCategory(category);
 
         productFilter.setCategory(category.getId());
 
+        productFilter = productService.validate(productFilter);
+
         List<Product> products = productService.findWithFilter(productFilter);
 
-        products = productService.filterWithFeatures(features_id, products);
-
-        val features = categoryService.findFeatureOfCategoryByCategory(category);
+        if (features_id != null) {
+            products = productService.filterWithFeatures(features_id, products);
+        }
 
         model.addAttribute("cur_user", userService.getActualUser(user, session_user));
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
+//        model.addAttribute("cur_category", category);
         model.addAttribute("pf", productFilter);
         return "catalog";
     }
@@ -293,6 +279,7 @@ public class ProductController {
             }
         }
 
+        model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("product", product);
         model.addAttribute("commented", commented);
         model.addAttribute("user", user);

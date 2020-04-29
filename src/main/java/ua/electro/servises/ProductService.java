@@ -104,16 +104,33 @@ public class ProductService {
     }
 
     public ProductFilter validate(ProductFilter productFilter) {
+
+
         if (productFilter.getPriceMax() == null) {
-            productFilter.setPriceMax(findMaxPrice());
+            Float maxPrice = findMaxPrice();
+            if (maxPrice != null) {
+                productFilter.setPriceMax(maxPrice);
+            } else {
+                productFilter.setPriceMax(0f);
+            }
         }
 
         if (productFilter.getIdMax() == null) {
-            productFilter.setIdMax(findMaxId());
+            Long maxId = findMaxId();
+            if (maxId != null) {
+                productFilter.setIdMax(maxId);
+            } else {
+                productFilter.setIdMax(0L);
+            }
         }
 
         if (productFilter.getQuantityMax() == null) {
-            productFilter.setQuantityMax(findMaxQuantity());
+            Long maxQuantity = findMaxQuantity();
+            if (maxQuantity != null) {
+                productFilter.setQuantityMax(maxQuantity);
+            } else {
+                productFilter.setQuantityMax(0L);
+            }
         }
 
         if (productFilter.getIdMin() == null) {
@@ -145,6 +162,7 @@ public class ProductService {
 
     // FIXME: 4/26/20 Wrong logic of filtering. If we have two screen size 1000x2000 and 2000x4000
     //  we find only products that have first AND second one
+
     public List<Product> filterWithFeatures(List<Long> features_id, List<Product> products) {
         /*Filtering by features*/
         if (features_id != null) {

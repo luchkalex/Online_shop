@@ -13,9 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/*TODO: Add description for Annotations*/
-
-
 @Entity
 @Data
 @NoArgsConstructor
