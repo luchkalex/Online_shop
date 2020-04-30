@@ -13,6 +13,12 @@
             </div>
         </#if>
 
+        <#if saveItemError??>
+
+            <div class="mt-3 text-danger alert-danger">${saveItemError}</div>
+
+        </#if>
+
         <table class="table table-striped table-hover ">
             <thead>
             <tr>
@@ -52,6 +58,7 @@
                     </td>
 
                 </tr>
+
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
 
             <#else >

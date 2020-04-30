@@ -1,8 +1,8 @@
 package ua.electro.models;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,10 +35,9 @@ public class Product implements Serializable {
         this.description = product.description;
         this.price = product.price;
         this.discount = product.discount;
-        this.popularity = product.popularity;
         this.photo = product.photo;
         this.quantity = quantity;
-        this.release_date = product.release_date;
+        this.creatingDate = product.creatingDate;
         this.category = product.category;
         this.productStatus = product.productStatus;
         this.outcomes = product.outcomes;
@@ -61,35 +60,35 @@ public class Product implements Serializable {
     @NotBlank(message = "Description can't be empty!")
     private String description;
 
-    //    @Pattern(regexp = "\\d{1,6}", message = "Wrong price")
+    @Column(name = "price", columnDefinition = "float default 0")
     @NotNull(message = "Price can't be empty")
     private Float price;
 
+    @Column(name = "discount", columnDefinition = "float default 0")
     private Float discount;
-
-    private Float popularity;
 
     private String photo;
 
     @Transient
     private Long quantity;
 
+    @Column(name = "rating", columnDefinition = "float default 0")
     private Float rating;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ProductStatistic statistic;
 
     //    @NonNull
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    @Temporal(TemporalType.DATE)
-    private Date release_date;
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creatingDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category")
     private Category category;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_status")
+    @JoinColumn(name = "product_status", columnDefinition = "bigint default 3")
     private ProductStatuses productStatus;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

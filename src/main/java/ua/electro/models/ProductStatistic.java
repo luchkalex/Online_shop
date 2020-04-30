@@ -19,14 +19,14 @@ import java.io.Serializable;
 public class ProductStatistic implements Serializable {
 
     @Id
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Product product;
 
+    @Column(name = "sold", columnDefinition = "bigint default 0")
     private Long sold;
 
+    @Column(name = "viewed", columnDefinition = "bigint default 0")
     private Long viewed;
-
-    private Long added_to_cart;
 
 }

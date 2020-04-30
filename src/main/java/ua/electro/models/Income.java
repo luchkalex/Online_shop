@@ -1,6 +1,7 @@
 package ua.electro.models;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Income implements Serializable {
     @NotNull(message = "Quantity can't be empty")
     private Long quantity;
 
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_in;
 

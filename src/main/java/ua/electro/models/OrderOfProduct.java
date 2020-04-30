@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +30,7 @@ public class OrderOfProduct implements Serializable {
     private float total;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_status")
+    @JoinColumn(name = "order_status", columnDefinition = "bigint default 1")
     private OrderStatuses orderStatuses;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -49,7 +49,7 @@ public class OrderOfProduct implements Serializable {
     private Set<OrderItem> orderItems = new HashSet<>();
 
 
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 }

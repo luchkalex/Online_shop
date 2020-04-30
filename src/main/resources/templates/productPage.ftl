@@ -38,14 +38,18 @@
                 </#if>
 
                 <div class="mt-2">
-                    <#assign inCart = false>
-                        <#list cartItems as cartItem>
-                            <#if cartItem.product.id = product.id><#assign inCart = true ></#if>
-                        </#list>
-                    <#if inCart>
-                        <a href="/users/cart" class="btn btn-secondary">In cart</a>
+                    <#if product.productStatus.title = 'Not available'>
+                        <div class="btn btn-secondary">Not available</div>
                     <#else >
-                        <a href="/products/add_to_cart/${product.id}" class="btn btn-primary">Add to cart</a>
+                        <#assign inCart = false>
+                        <#list cartItems as cartItem>
+                            <#if cartItem.product.id = product.id><#assign inCart = true ><#break ></#if>
+                        </#list>
+                        <#if inCart>
+                            <a href="/users/cart" class="btn btn-secondary">In cart</a>
+                        <#else >
+                            <a href="/products/add_to_cart/${product.id}" class="btn btn-primary">Add to cart</a>
+                        </#if>
                     </#if>
                 </div>
 
@@ -55,8 +59,6 @@
                             <div class="card-header">Statistic on the product</div>
                             <div class="card-body">
                                 <div class="card-text mt-2 border-bottom">Viewed: ${product.statistic.viewed}</div>
-                                <div class="card-text mt-2 border-bottom">Added to
-                                    cart: ${product.statistic.added_to_cart}</div>
                                 <div class="card-text mt-2 border-bottom">Sold: ${product.statistic.sold}</div>
                             </div>
                         <#else >

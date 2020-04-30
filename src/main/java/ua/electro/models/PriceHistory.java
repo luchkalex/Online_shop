@@ -1,6 +1,7 @@
 package ua.electro.models;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,11 +25,11 @@ public class PriceHistory implements Serializable {
     @JoinColumn(name = "product_id")
     private Product product;
 
-
     private float price;
 
     private int discount;
 
-    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date setDate;
 }

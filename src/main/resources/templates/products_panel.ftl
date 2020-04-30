@@ -81,61 +81,63 @@
                         </thead>
                         <tbody>
                         <#list products as product>
-                            <tr>
-                                <td class="text-center">${product.id}</td>
-                                <td><#if product.photo??>
-                                        <img src="/img/${product.photo}" alt="Image" class="avatar-img">
-                                    <#else >
-                                        <img src="/img/default.jpeg" alt="Image" class="avatar-img">
-                                    </#if></td>
-                                <td>${product.title}</td>
-                                <td><#if product.category??>${product.category.title}<#else>none</#if></td>
-                                <td class="text-center">
-                                    <#if product.discount?? && product.discount != 0>
-                                        <strong class="text-muted"
-                                                style="text-decoration: line-through">${product.price}
-                                            hrn</strong>
-                                    </#if>
-                                    <strong>${product.price - product.discount} hrn</strong>
-                                </td>
-                                <td class="text-center">${product.quantity ! 0}</td>
-                                <td>${product.productStatus.title}</td>
-                                <td>
-                                    <a href="/products/edit/${product.id}"><i class="fas fa-edit"></i></a>
-                                    <a data-toggle="collapse" href="#quantityInput${product.id}" role="button"
-                                       aria-expanded="false" aria-controls="collapseExample">
-                                        <i class="fas fa-plus-circle" style="color: green"></i>
-                                    </a>
+                            <#if product.productStatus.title != 'Deleted'>
+                                <tr>
+                                    <td class="text-center">${product.id}</td>
+                                    <td><#if product.photo??>
+                                            <img src="/img/${product.photo}" alt="Image" class="avatar-img">
+                                        <#else >
+                                            <img src="/img/default.jpeg" alt="Image" class="avatar-img">
+                                        </#if></td>
+                                    <td>${product.title}</td>
+                                    <td><#if product.category??>${product.category.title}<#else>none</#if></td>
+                                    <td class="text-center">
+                                        <#if product.discount?? && product.discount != 0>
+                                            <strong class="text-muted"
+                                                    style="text-decoration: line-through">${product.price}
+                                                hrn</strong>
+                                        </#if>
+                                        <strong>${product.price - product.discount} hrn</strong>
+                                    </td>
+                                    <td class="text-center">${product.quantity ! 0}</td>
+                                    <td>${product.productStatus.title}</td>
+                                    <td>
+                                        <a href="/products/edit/${product.id}"><i class="fas fa-edit"></i></a>
+                                        <a data-toggle="collapse" href="#quantityInput${product.id}" role="button"
+                                           aria-expanded="false" aria-controls="collapseExample">
+                                            <i class="fas fa-plus-circle" style="color: green"></i>
+                                        </a>
 
-                                    <a data-toggle="collapse" href="#discountInput${product.id}" role="button"
-                                       aria-expanded="false" aria-controls="collapseExample">
-                                        <i class="fas fa-percent"></i>
-                                    </a>
+                                        <a data-toggle="collapse" href="#discountInput${product.id}" role="button"
+                                           aria-expanded="false" aria-controls="collapseExample">
+                                            <i class="fas fa-percent"></i>
+                                        </a>
 
 
-                                    <a href="/products/delete/${product.id}">
-                                        <i class="fas fa-trash-alt" style="color: red"></i>
-                                    </a>
+                                        <a href="/products/delete/${product.id}">
+                                            <i class="fas fa-trash-alt" style="color: red"></i>
+                                        </a>
 
-                                    <#--FIXME: First product in list haven't form element-->
-                                    <div class="collapse" id="quantityInput${product.id}">
-                                        <form action="/products/income/${product.id}">
-                                            <input type="text" class="form-control-sm col-sm-5" name="quantity">
-                                            <input type="submit" class="btn btn-info" value="Add">
-                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                        </form>
-                                    </div>
+                                        <#--FIXME: First product in list haven't form element-->
+                                        <div class="collapse" id="quantityInput${product.id}">
+                                            <form action="/products/income/${product.id}">
+                                                <input type="text" class="form-control-sm col-sm-5" name="quantity">
+                                                <input type="submit" class="btn btn-info" value="Add">
+                                                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            </form>
+                                        </div>
 
-                                    <div class="collapse" id="discountInput${product.id}">
-                                        <form action="/products/add_discount/${product.id}">
-                                            <input type="text" class="form-control-sm col-sm-5" name="discount">
-                                            <input type="submit" class="btn btn-info" value="Add">
-                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                                        </form>
-                                    </div>
+                                        <div class="collapse" id="discountInput${product.id}">
+                                            <form action="/products/add_discount/${product.id}">
+                                                <input type="text" class="form-control-sm col-sm-5" name="discount">
+                                                <input type="submit" class="btn btn-info" value="Add">
+                                                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            </form>
+                                        </div>
 
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            </#if>
                         <#else >
                             <tr>
                                 <td>No products</td>

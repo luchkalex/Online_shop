@@ -91,10 +91,6 @@ public class ProductService {
         productRepo.delete(product);
     }
 
-    public void save(Income income) {
-        incomeRepo.save(income);
-    }
-
     public Product findOneById(Long product_id) {
         return productRepo.findOneById(product_id);
     }
@@ -160,11 +156,12 @@ public class ProductService {
         return productFilter;
     }
 
-    // FIXME: 4/26/20 Wrong logic of filtering. If we have two screen size 1000x2000 and 2000x4000
-    //  we find only products that have first AND second one
+
+    /*FIXME: 4/26/20 Wrong logic of filtering. If we have two screen size 1000x2000 and 2000x4000 we find only products
+           that have first AND second one. BUT NOT I DON'T WANT TO DO THIS IT IS HARD. We have to filter using OR by
+           identical feature like display size 5, 6 and filter using AND by different feature like display size 5 and color black*/
 
     public List<Product> filterWithFeatures(List<Long> features_id, List<Product> products) {
-        /*Filtering by features*/
         if (features_id != null) {
             features_id.forEach(filter -> {
                 CollectionUtils.filter(products, product -> ((Product) product).getValuesOfFeatures().contains(new ValueOfFeature(filter)));
@@ -172,6 +169,15 @@ public class ProductService {
         }
         return products;
     }
+
+    /*-------------------------Income-------------------------*/
+
+    public void save(Income income) {
+        incomeRepo.save(income);
+    }
+
+
+    /*-------------------------Carts-------------------------*/
 
     public User addCartItems(User user, Product product) {
         if (user.getId() == null) {
@@ -186,5 +192,19 @@ public class ProductService {
 
     public List<ProductStatuses> findAllProductStatuses() {
         return statusesRepo.findAll();
+    }
+
+    /*-------------------------Stat-------------------------*/
+
+    public void addViewOfPage(Long product_id) {
+        productRepo.addView(product_id);
+    }
+
+    public void remove(Long product_id) {
+        productRepo.setStatusDeleted(product_id);
+    }
+
+    public Long findQuantityByProductId(Long product_id) {
+        return productRepo.findQuantityByProductId(product_id);
     }
 }

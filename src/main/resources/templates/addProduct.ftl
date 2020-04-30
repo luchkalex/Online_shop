@@ -43,17 +43,6 @@
                 </div>
             </#if>
 
-            <label for="release_date" class="mt-2">Release date (optional)</label>
-            <input type="date" dataformatas="yyyy/mm/dd" name="release_date"
-                   class="form-control ${(release_dateError??)?string('is-invalid', '')} my-1 col-sm-4"
-                   placeholder="Enter description" id="release_date"/>
-
-            <#if release_dateError??>
-                <div class="invalid-feedback">
-                    ${release_dateError}
-                </div>
-            </#if>
-
             <div class="custom-file mt-2 col-sm-4">
                 <input type="file" class="custom-file-input form-control"
                        data-url="<#if product?? && product.photo??>/img/${product.photo}</#if>"

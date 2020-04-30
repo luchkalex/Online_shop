@@ -4,6 +4,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ua.electro.models.*;
 import ua.electro.servises.CartService;
@@ -11,6 +12,7 @@ import ua.electro.servises.OrderService;
 import ua.electro.servises.ProductService;
 import ua.electro.servises.UserService;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -124,13 +126,25 @@ public class UserController {
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @RequestParam("cartItem_id") Long cartItem_id,
-            @RequestParam("quantity") Integer quantity) {
+            @RequestParam("quantity") Integer quantity,
+            Model model) {
 
         user = userService.getActualUser(user, session_user);
 
         /*Block for save deleting. Update only cart item that have current user*/
         for (CartItem u_cartItem : user.getCartItems()) {
             if (u_cartItem.getId().equals(cartItem_id)) {
+
+                Long current_quantity = productService.findQuantityByProductId(u_cartItem.getProduct().getId());
+
+                if (current_quantity < quantity) {
+                    Set<CartItem> cartItems = getCartItems(user);
+
+                    model.addAttribute("saveItemError", "Sorry, we do not have that amount of product");
+                    model.addAttribute("user", user);
+                    model.addAttribute("cartItems", cartItems);
+                    return "cartPage";
+                }
                 u_cartItem.setQuantity(quantity);
 
                 if (user.getId() != null) {
@@ -188,12 +202,12 @@ public class UserController {
         return "editOrderPage";
     }
 
-    // TODO: 4/25/20 When order will be approved and completed add to outcome
     @PostMapping("order_maker")
     public String makeOrder(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
-            @ModelAttribute("order") OrderOfProduct order,
+            @Valid @ModelAttribute("order") OrderOfProduct order,
+            BindingResult bindingResult,
             @RequestParam Long payment_id,
             @RequestParam Long delivery_id,
             Model model) {
@@ -203,7 +217,6 @@ public class UserController {
         order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
         order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
         order.setTotal(0);
-
         /*Copy from cart items to order items*/
         user.getCartItems().forEach(cartItem -> {
             order.getOrderItems().add(new OrderItem(

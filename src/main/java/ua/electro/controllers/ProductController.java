@@ -98,6 +98,9 @@ public class ProductController {
 
             saveFile(product, file);
 
+            product.setDiscount(0f);
+            product.setRating(0f);
+
             model.addAttribute("product", null);
             productService.save(product);
         }
@@ -125,8 +128,8 @@ public class ProductController {
     public String editProduct(
             // TODO: 4/25/20 Price separated?
             @RequestParam("category_id") Integer category_id,
-            @PathVariable("product_id") Long product_id,
-            @Valid @ModelAttribute("product") Product product,
+            @PathVariable("product_id") Product oldProduct,
+            @Valid @ModelAttribute("newProduct") Product newProduct,
             BindingResult bindingResult,
             @RequestParam(required = false) List<Long> features_id,
             /*TODO: Add file validation on (Type, size, ect)*/
@@ -135,15 +138,17 @@ public class ProductController {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
-        product.getValuesOfFeatures().clear();
+        newProduct.getValuesOfFeatures().clear();
 
-        product.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
+        newProduct.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
 
         if (category != null) {
-            product.setCategory(category);
+            newProduct.setCategory(category);
         }
 
-        product.setId(product_id);
+        newProduct.setId(oldProduct.getId());
+
+        newProduct.setDiscount(oldProduct.getDiscount());
 
         if (bindingResult.hasErrors()) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
@@ -154,9 +159,9 @@ public class ProductController {
             return "addProduct";
         } else {
 
-            product.setPhoto(saveFile(product, file));
-            model.addAttribute("product", null);
-            productService.save(product);
+            newProduct.setPhoto(saveFile(newProduct, file));
+            model.addAttribute("newProduct", null);
+            productService.save(newProduct);
         }
         return "redirect:/control_panel/products";
     }
@@ -180,10 +185,10 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/delete/{product_id}")
-    public String deleteProduct(
-            @PathVariable("product_id") Product product) {
+    public String removeProduct(
+            @PathVariable("product_id") Long product_id) {
 
-        productService.delete(product);
+        productService.remove(product_id);
 
         return "redirect:/control_panel/products";
     }
@@ -236,6 +241,8 @@ public class ProductController {
             @ModelAttribute("productFilter") ProductFilter productFilter,
             Model model) {
 
+        user = userService.getActualUser(user, session_user);
+
         val category = new Category(Long.valueOf(category_id));
 
         val features = categoryService.findFeatureOfCategoryByCategory(category);
@@ -250,7 +257,7 @@ public class ProductController {
             products = productService.filterWithFeatures(features_id, products);
         }
 
-        model.addAttribute("cur_user", userService.getActualUser(user, session_user));
+        model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
@@ -278,6 +285,8 @@ public class ProductController {
                 break;
             }
         }
+
+        productService.addViewOfPage(product.getId());
 
         model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("product", product);

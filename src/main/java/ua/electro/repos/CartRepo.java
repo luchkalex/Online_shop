@@ -12,7 +12,7 @@ import ua.electro.models.User;
 import java.util.Set;
 
 @Repository
-public interface CartRepo extends JpaRepository<CartItem, Integer> {
+public interface CartRepo extends JpaRepository<CartItem, Long> {
 
     @Transactional
     @Modifying
