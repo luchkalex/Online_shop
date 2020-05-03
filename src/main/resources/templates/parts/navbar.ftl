@@ -26,7 +26,7 @@
         <form action="/products/catalog">
             <div class="input-group">
                 <label for="title"></label>
-                <input type="text" name="title" id="title" placeholder="Search"
+                <input type="text" maxlength="255" name="title" id="title" placeholder="Search"
                        class="bg-dark text-white border-dark rounded">
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <div class="input-group-append">
@@ -34,6 +34,12 @@
                 </div>
             </div>
         </form>
+
+        <#if titleError??>
+            <div class="text-danger">
+                ${titleError}
+            </div>
+        </#if>
 
         <li class="nav-item">
             <a class="nav-link" href="/users/cart" style="font-size: 25px; color: orange"><i

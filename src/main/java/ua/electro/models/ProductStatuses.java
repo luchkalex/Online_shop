@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductStatuses implements Serializable {
-    //    NOT_AVAILABLE, IN_STOCK, PRE_ORDER, NEW, DELETED
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NonNull

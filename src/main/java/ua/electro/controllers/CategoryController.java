@@ -7,10 +7,9 @@ import ua.electro.models.Category;
 import ua.electro.models.FeaturesOfCategory;
 import ua.electro.servises.CategoryService;
 
-
-@Controller // This means that this class is a Controller
+@Controller
 @PreAuthorize("hasAuthority('ADMIN')")
-@RequestMapping(path = "/categories") // This means URL's start with /demo (after Application path)
+@RequestMapping(path = "/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -43,7 +42,7 @@ public class CategoryController {
     }
 
     @GetMapping("/add_feature")
-    public String addFeature(
+    public String addFeatureToCategory(
             @RequestParam("category_id") Long category_id,
             @RequestParam("feature_id") Long feature_id) {
 
@@ -61,7 +60,7 @@ public class CategoryController {
     }
 
     @GetMapping("/delete_feature")
-    public String deleteFeature(
+    public String deleteFeatureFromCategory(
             @RequestParam("category_id") Long category_id,
             @RequestParam("feature_id") Long feature_id) {
 

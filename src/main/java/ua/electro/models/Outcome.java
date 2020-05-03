@@ -23,7 +23,7 @@ public class Outcome implements Serializable {
     private Long quantity;
 
     @NonNull
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date_out;
 
     @NonNull

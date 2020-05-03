@@ -1,10 +1,10 @@
 <#macro login path isRegisterForm>
 
-
     <form action="${path}" method="post" novalidate>
         <div class="form-group">
             <label for="username_input">User name</label>
-            <input type="text" class="form-control ${(usernameError??)?string('is-invalid', '')} col-sm-4"
+            <input type="text" maxlength="255"
+                   class="form-control ${(usernameError??)?string('is-invalid', '')} col-sm-4"
                    name="username" id="username_input"
                    value="<#if user?? && user.id??>${user.username}</#if>"
                    placeholder="User name">
@@ -16,7 +16,8 @@
         </div>
         <div class="form-group">
             <label for="password_input">Password</label>
-            <input type="password" class="form-control ${(passwordError??)?string('is-invalid', '')} col-sm-4"
+            <input type="password" maxlength="255"
+                   class="form-control ${(passwordError??)?string('is-invalid', '')} col-sm-4"
                    name="password" id="password_input"
                    placeholder="Password">
             <#if passwordError??>
@@ -28,7 +29,8 @@
         <#if isRegisterForm>
             <div class="form-group">
                 <label for="conf_password_input">Password</label>
-                <input type="password" class="form-control ${(conf_passwordError??)?string('is-invalid', '')} col-sm-4"
+                <input type="password" maxlength="255"
+                       class="form-control ${(conf_passwordError??)?string('is-invalid', '')} col-sm-4"
                        name="conf_password" id="conf_password_input"
                        placeholder="Retype password">
                 <#if conf_passwordError??>

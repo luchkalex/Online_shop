@@ -2,8 +2,12 @@ package ua.electro.servises.accessoryServices;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,15 +15,32 @@ import java.util.Date;
 @Setter
 @Getter
 public class OrderFilter {
+
+    @Min(value = 0, message = "Min Id can't be negative!")
     private Long idMin;
+
+    @Positive(message = "Max Id can't be negative!")
+    @Max(value = Long.MAX_VALUE, message = "Id is too large!")
     private Long idMax;
+
+    @Length(max = 255, message = "Username is too long (max - 255 symbols)")
     private String username;
+
+    @Min(value = 0, message = "Min total can't be negative!")
     private Float totalMin;
+
+    @Positive(message = "Max total can't be negative!")
+    @Max(value = Long.MAX_VALUE, message = "Max total is too large!")
     private Float totalMax;
+
     private Long payment;
     private Long delivery;
+
+    @Length(max = 255, message = "Address is too long (max - 255 symbols)")
     private String address;
+
     private Long status;
+
     private Date dateMin;
     private Date dateMax;
 

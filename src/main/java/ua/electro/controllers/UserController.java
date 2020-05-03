@@ -1,6 +1,6 @@
 package ua.electro.controllers;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.val;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import ua.electro.servises.UserService;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -41,39 +40,6 @@ public class UserController {
     }
 
 
-    /*------------------------Delete?------------------------------*/
-
-    /*Returns list of users*/
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public String userList(Model model) {
-
-        model.addAttribute(userService.findAll());
-        return "userList";
-    }
-
-    /*Returns page of user with edit form*/
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("{user}")
-    public String userEditForm(@PathVariable User user, Model model) {
-
-        model.addAttribute("user", user);
-        model.addAttribute("roles", Role.values());
-        return "userEdit";
-    }
-
-
-    @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String saveUser(
-            @RequestParam String username,
-            @RequestParam Map<String, String> form,
-            @RequestParam("user_id") User user) {
-
-        userService.saveUser(username, form, user);
-        return "redirect:/users";
-    }
-
     /*------------------------------Profile---------------------------------*/
 
     @GetMapping("profile")
@@ -89,15 +55,26 @@ public class UserController {
     @PostMapping("profile")
     public String editProfile(
             @AuthenticationPrincipal User user,
-            @ModelAttribute("user") User newUser
+            @Valid @ModelAttribute("user") User newUser,
+            BindingResult bindingResult,
+            Model model
     ) {
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
 
-        userService.editUser(user, newUser);
-        return "redirect:/";
+            List<OrderOfProduct> orders = orderService.findByUser(user);
+            model.addAttribute("user", user);
+            model.addAttribute("orders", orders);
+            return "profile";
+        } else {
+            userService.editUser(user, newUser);
+            return "redirect:/";
+        }
     }
 
     @GetMapping("deleteAccount")
-    public String deleteAccount(@AuthenticationPrincipal User user) {
+    public String deactivateAccount(@AuthenticationPrincipal User user) {
 
         userService.deactivateUser(user.getId());
         return "redirect:/";
@@ -122,42 +99,52 @@ public class UserController {
 
 
     @GetMapping("editCart")
-    public String getCart(
+    public String editCart(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @RequestParam("cartItem_id") Long cartItem_id,
-            @RequestParam("quantity") Integer quantity,
+            @Valid @ModelAttribute("cart_item") CartItem cartItem,
+            BindingResult bindingResult,
             Model model) {
 
         user = userService.getActualUser(user, session_user);
 
-        /*Block for save deleting. Update only cart item that have current user*/
-        for (CartItem u_cartItem : user.getCartItems()) {
-            if (u_cartItem.getId().equals(cartItem_id)) {
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            model.addAttribute("user", user);
+            model.addAttribute("cartItems", getCartItems(user));
+            return "cartPage";
 
-                Long current_quantity = productService.findQuantityByProductId(u_cartItem.getProduct().getId());
+        } else {
+            /*Update only cart item that have current user*/
+            for (CartItem u_cartItem : user.getCartItems()) {
+                if (u_cartItem.getId().equals(cartItem_id)) {
 
-                if (current_quantity < quantity) {
-                    Set<CartItem> cartItems = getCartItems(user);
+                    Long current_quantity = productService.findQuantityByProductId(u_cartItem.getProduct().getId());
 
-                    model.addAttribute("saveItemError", "Sorry, we do not have that amount of product");
-                    model.addAttribute("user", user);
-                    model.addAttribute("cartItems", cartItems);
-                    return "cartPage";
+                    if (current_quantity < cartItem.getQuantity()) {
+
+                        model.addAttribute("saveItemError", "Sorry, we do not have that amount of product");
+                        model.addAttribute("user", user);
+                        model.addAttribute("cartItems", getCartItems(user));
+                        return "cartPage";
+                    }
+                    u_cartItem.setQuantity(cartItem.getQuantity());
+
+                    if (user.getId() != null) {
+                        cartService.saveSet(Collections.singleton(u_cartItem));
+                    }
+                    return "redirect:/users/cart";
                 }
-                u_cartItem.setQuantity(quantity);
-
-                if (user.getId() != null) {
-                    cartService.saveSet(Collections.singleton(u_cartItem));
-                }
-                return "redirect:/users/cart";
             }
         }
+
         return "redirect:/users/cart";
     }
 
     @GetMapping("deleteCart/{cartItem_id}")
-    public String deleteCart(
+    public String deleteCartItem(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @PathVariable("cartItem_id") Long cartItem_id) {
@@ -189,7 +176,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        /*In case when cart empty return error to cart*/
+        /*In case when cart empty return error to cart page*/
         if (user.getCartItems().isEmpty()) {
             Set<CartItem> cartItems = getCartItems(user);
             model.addAttribute("cartError", "Cart is empty. You can't make order");
@@ -214,33 +201,42 @@ public class UserController {
 
         user = userService.getActualUser(user, session_user);
 
-        order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
-        order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
-        order.setTotal(0);
-        /*Copy from cart items to order items*/
-        user.getCartItems().forEach(cartItem -> {
-            order.getOrderItems().add(new OrderItem(
-                    cartItem.getProduct(),
-                    cartItem.getQuantity(),
-                    order
-            ));
-            order.setTotal(order.getTotal() + (cartItem.getQuantity() * cartItem.getProduct().getPrice()));
-        });
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            model.addAttribute("types_of_payment", orderService.findAllTypesOfPayment());
+            model.addAttribute("types_of_delivery", orderService.findAllTypesOfDelivery());
+            model.addAttribute("user", user);
+            return "editOrderPage";
+        } else {
+            order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
+            order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
+            order.setTotal(0);
+            /*Copy from cart items to order items*/
+            user.getCartItems().forEach(cartItem -> {
+                order.getOrderItems().add(new OrderItem(
+                        cartItem.getProduct(),
+                        cartItem.getQuantity(),
+                        order
+                ));
+                order.setTotal(order.getTotal() + (cartItem.getQuantity() * (cartItem.getProduct().getPrice() - cartItem.getProduct().getDiscount())));
+            });
 
-        /*If user registered, add to order*/
-        if (user.getId() != null) {
-            order.setUser(user);
+            /*If user registered, add to order*/
+            if (user.getId() != null) {
+                order.setUser(user);
+            }
+
+            /*Clear cart in db*/
+            cartService.deleteSet(user.getCartItems());
+
+            orderService.save(order);
+
+            model.addAttribute("order", order);
+            model.addAttribute("user", user);
+
+            return "orderPage";
         }
-
-        /*Clear cart in db*/
-        cartService.deleteSet(user.getCartItems());
-
-        orderService.save(order);
-
-        model.addAttribute("order", order);
-        model.addAttribute("user", user);
-
-        return "orderPage";
     }
 
     @GetMapping("order/{order_id}")
@@ -278,7 +274,7 @@ public class UserController {
     }
 
     @PostMapping("comment/{product_id}")
-    public String getCommentPage(
+    public String saveComment(
             @AuthenticationPrincipal User user,
             @PathVariable("product_id") Long product_id,
             @ModelAttribute("comment") Comment comment,

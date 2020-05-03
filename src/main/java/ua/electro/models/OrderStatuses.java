@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderStatuses implements Serializable {
-    //    WAITING, CANCELED, ACCEPTED, DONE
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

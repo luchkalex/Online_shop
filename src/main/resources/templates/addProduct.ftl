@@ -9,7 +9,7 @@
 
             <label for="product_title" class="mt-2">Title</label>
             <input type="text" name="title"
-                   class="form-control ${(titleError??)?string('is-invalid', '')} my-1 col-sm-4"
+                   class="form-control my-1 col-sm-4"
                    value="<#if product?? && !titleError??>${product.title}</#if>" placeholder="Enter title"
                    id="product_title"/>
 
@@ -20,8 +20,8 @@
             </#if>
 
             <label for="price" class="mt-2">Price</label>
-            <input type="text" name="price"
-                   class="form-control ${(priceError??)?string('is-invalid', '')} my-1 col-sm-4"
+            <input type="number" max="300000" maxlength="6" min="0" name="price"
+                   class="form-control my-1 col-sm-4"
                    placeholder="Price" id="price"
                    value="<#if product?? && !priceError??>${product.price?string["0"]}</#if>">
             <#if priceError??>
@@ -31,11 +31,9 @@
             </#if>
 
             <label for="product_desc" class="mt-2">Description</label>
-            <input type="text" name="description"
-                   class="form-control ${(descriptionError??)?string('is-invalid', '')} my-1 col-sm-4"
-                   value="<#if product?? && !descriptionError??>${product.description}</#if>"
-                   placeholder="Enter description"
-                   id="product_desc"/>
+
+            <textarea name="description" id="product_desc" cols="80" rows="10"
+                      placeholder="Enter description"><#if product?? && !descriptionError??>${product.description}</#if></textarea>
 
             <#if descriptionError??>
                 <div class="invalid-feedback">
@@ -53,10 +51,18 @@
                 </label>
 
                 <#if product?? && product.photo??>
-                    <img src="/img/${product.photo}" alt="Image" class="avatar-img">
+                    <div>
+                        <img src="/img/${product.photo}" alt="Image" class="avatar-img">
+                    </div>
                 </#if>
 
             </div>
+
+            <#if photoError??>
+                <div class="invalid-feedback">
+                    ${photoError}
+                </div>
+            </#if>
 
             <#--TODO: Add file error-->
 

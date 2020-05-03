@@ -39,7 +39,8 @@
             <#list order.orderItems as orderItem>
                 <tr>
                     <td class="text-center">${orderItem.product.title}</td>
-                    <td class="text-center">${orderItem.quantity} (${orderItem.quantity * orderItem.product.price}hrn)
+                    <td class="text-center">${orderItem.quantity}
+                        (${orderItem.quantity * (orderItem.product.price - orderItem.product.discount)}hrn)
                     </td>
                 </tr>
             <#else >

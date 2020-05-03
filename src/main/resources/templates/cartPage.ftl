@@ -14,9 +14,13 @@
         </#if>
 
         <#if saveItemError??>
-
             <div class="mt-3 text-danger alert-danger">${saveItemError}</div>
+        </#if>
 
+        <#if quantityError??>
+            <div class="alert alert-danger">
+                ${quantityError}
+            </div>
         </#if>
 
         <table class="table table-striped table-hover ">
@@ -34,18 +38,21 @@
 
                 <tr>
                     <td class="text-center">${cartItem.product.title}</td>
-                    <td class="text-center">${cartItem.product.price}</td>
+                    <td class="text-center">${cartItem.product.price - cartItem.product.discount}</td>
 
                     <td class="text-center">
                         <form action="/users/editCart" id="editCartForm${cartItem.id?string['0']}">
                             <label for="quantity${cartItem.id}"></label>
-                            <input type="text" value="${cartItem.quantity}" placeholder="Quantity" name="quantity"
+                            <input type="number" max="1000" min="1" maxlength="4" required value="${cartItem.quantity}"
+                                   placeholder="Quantity" name="quantity"
                                    id="quantity${cartItem.id}" class="col-sm-5">
                             <input type="hidden" value="${cartItem.id?string['0']}" name="cartItem_id">
                         </form>
+
+
                     </td>
 
-                    <td class="text-center">${cartItem.quantity * cartItem.product.price}</td>
+                    <td class="text-center">${cartItem.quantity * (cartItem.product.price - cartItem.product.discount)}</td>
 
                     <td class="text-center">
 

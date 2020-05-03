@@ -181,15 +181,18 @@ td {
 }
 
 .product-image {
-    object-fit: cover;
-    height: 250px;
-    width: 100%;
+    object-fit: unset;
+    /*height: 220px;*/
+    width: auto;
+    max-width: 100%;
+    max-height: 230px;
+    min-height: 230px;
 }
 
 .product-big-image {
     object-fit: cover;
     height: 500px;
-    width: 100%;
+    width: auto;
 }
 
 .container-1300 {
@@ -246,13 +249,6 @@ input[type="range"]::-moz-range-progress {
 input[type="range"]::-moz-range-track {
     background-color: darkred;
 }
-
-/*input[type="range"]::-ms-fill-lower {*/
-/*    background-color: green;*/
-/*}*/
-/*input[type="range"]::-ms-fill-upper {*/
-/*    background-color: darkred;*/
-/*}*/
 
 .cart {
     width: 50px;

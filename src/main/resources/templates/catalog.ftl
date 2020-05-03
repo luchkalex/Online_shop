@@ -7,16 +7,38 @@
             <div class="col-3 mt-3">
                 <form>
                     <input type="submit" class="btn btn-primary" value="Search">
-                    <div><span>Price</span></div>
-                    <div>
-                        <label for="priceMin">From</label>
-                        <input type="text" placeholder="min" value="${pf.priceMin?string["0"]}" id="priceMin"
-                               name="priceMin"
-                               class="col-sm-4">
-                        <label for="priceMax">To</label>
-                        <input type="text" placeholder="max" value="${pf.priceMax?string["0"]}" id="priceMax"
-                               name="priceMax" class="col-sm-4">
+
+                    <div class="mt-5">
+                        <div>
+                            <h4>Price</h4>
+                        </div>
+
+                        <div class="mt-2">
+                            <label for="priceMin">From</label>
+                            <input type="number" placeholder="min"
+                                   value="<#if pf.priceMin??>${pf.priceMin?string["0"]}</#if>" id="priceMin"
+                                   name="priceMin"
+                                   class="w-100">
+                        </div>
+                        <div>
+                            <label for="priceMax">To</label>
+                            <input type="number" placeholder="max"
+                                   value="<#if pf.priceMax??>${pf.priceMax?string["0"]}</#if>" id="priceMax"
+                                   name="priceMax" class="w-100">
+                        </div>
                     </div>
+
+                    <#if priceMaxError??>
+                        <div class="text-danger">
+                            ${priceMaxError}
+                        </div>
+                    </#if>
+
+                    <#if priceMinError??>
+                        <div class="text-danger">
+                            ${priceMinError}
+                        </div>
+                    </#if>
 
                     <#if type?? && type="category">
 

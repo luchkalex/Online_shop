@@ -45,4 +45,6 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
 
     @Query("select q.quantity from QuantityOfProducts q where q.id = :product_id")
     Long findQuantityByProductId(Long product_id);
+
+    List<Product> findByCategoryId(Long category_id);
 }

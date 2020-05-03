@@ -44,7 +44,7 @@ public class FeatureController {
     }
 
     @GetMapping("/add_value")
-    public String addValue(
+    public String addValueOfFeature(
             @RequestParam("feature_id") Long feature_id,
             @RequestParam("value_title") String value_title) {
 
@@ -61,7 +61,7 @@ public class FeatureController {
     }
 
     @GetMapping("/delete_value")
-    public String deleteValue(
+    public String deleteValueOfFeature(
             @RequestParam("value_id") Long value_id) {
 
         categoryService.removeValueById(value_id);

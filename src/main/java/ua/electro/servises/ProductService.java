@@ -87,16 +87,13 @@ public class ProductService {
         return productRepo.findMaxQuantity();
     }
 
-    public void delete(Product product) {
-        productRepo.delete(product);
-    }
 
     public Product findOneById(Long product_id) {
         return productRepo.findOneById(product_id);
     }
 
-    public List<Product> findByCategory(Category category) {
-        return productRepo.findByCategory(category);
+    public List<Product> findByCategoryId(Long category_id) {
+        return productRepo.findByCategoryId(category_id);
     }
 
     public ProductFilter validate(ProductFilter productFilter) {
@@ -156,11 +153,6 @@ public class ProductService {
         return productFilter;
     }
 
-
-    /*FIXME: 4/26/20 Wrong logic of filtering. If we have two screen size 1000x2000 and 2000x4000 we find only products
-           that have first AND second one. BUT NOT I DON'T WANT TO DO THIS IT IS HARD. We have to filter using OR by
-           identical feature like display size 5, 6 and filter using AND by different feature like display size 5 and color black*/
-
     public List<Product> filterWithFeatures(List<Long> features_id, List<Product> products) {
         if (features_id != null) {
             features_id.forEach(filter -> {
@@ -207,4 +199,6 @@ public class ProductService {
     public Long findQuantityByProductId(Long product_id) {
         return productRepo.findQuantityByProductId(product_id);
     }
+
+
 }

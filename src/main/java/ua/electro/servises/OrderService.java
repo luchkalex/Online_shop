@@ -157,21 +157,28 @@ public class OrderService {
             additionalFilter = additionalFilter.concat("(o.typesOfDelivery.id = " + orderFilter.getDelivery() + ") and ");
         }
 
-        Query query = entityManager.createQuery(
+        Query query = entityManager.createQuery("select u from User u where u.username like concat('%', :username, '%')");
+
+        query.setParameter("username", orderFilter.getUsername());
+
+        List users_id = query.getResultList();
+
+        query = entityManager.createQuery(
                 "select o " +
                         "from OrderOfProduct o " +
                         "where " +
                         additionalFilter +
                         "(o.id between :idMin and :idMax) and " +
-                        "(o.user.username like concat('%', :username, '%')) and " +
+                        "((o.user is null) or (o.user in :users_id)) and " +
                         "(o.address like concat('%', :address, '%')) and " +
                         "(o.total between :totalMin and :totalMax) and " +
                         "((o.orderDate between :dateMin and :dateMax) or (o.orderDate is null)) " +
                         "order by o.orderStatuses.id, o.orderDate");
 
+
+        query.setParameter("users_id", users_id);
         query.setParameter("idMin", orderFilter.getIdMin());
         query.setParameter("idMax", orderFilter.getIdMax());
-        query.setParameter("username", orderFilter.getUsername());
         query.setParameter("totalMin", orderFilter.getTotalMin());
         query.setParameter("totalMax", orderFilter.getTotalMax());
         query.setParameter("dateMin", orderFilter.getDateMin());

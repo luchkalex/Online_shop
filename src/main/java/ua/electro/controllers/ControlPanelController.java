@@ -1,8 +1,10 @@
 package ua.electro.controllers;
 
+import lombok.val;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,8 @@ import ua.electro.servises.ProductService;
 import ua.electro.servises.StatService;
 import ua.electro.servises.accessoryServices.OrderFilter;
 import ua.electro.servises.accessoryServices.ProductFilter;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/control_panel")
@@ -30,15 +34,22 @@ public class ControlPanelController {
         this.statService = statService;
     }
 
-    /*TODO: Add validation on Number format (max and min values)*/
     @GetMapping("/products")
-    public String getProducts(
-            @ModelAttribute("productFilter") ProductFilter productFilter,
+    public String getProductsList(
+            @Valid @ModelAttribute("productFilter") ProductFilter productFilter,
+            BindingResult bindingResult,
             Model model) {
 
-        productFilter = productService.validate(productFilter);
 
-        model.addAttribute("products", productService.findWithFilter(productFilter));
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            model.addAttribute("products", productService.findAll());
+        } else {
+            productFilter = productService.validate(productFilter);
+            model.addAttribute("products", productService.findWithFilter(productFilter));
+        }
+
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("statuses", productService.findAllProductStatuses());
 
@@ -48,23 +59,30 @@ public class ControlPanelController {
     }
 
     @GetMapping("/orders")
-    public String getOrders(
-            @ModelAttribute("orderFilter") OrderFilter orderFilter,
+    public String getOrdersList(
+            @Valid @ModelAttribute("orderFilter") OrderFilter orderFilter,
+            BindingResult bindingResult,
             Model model) {
 
-        orderFilter = orderService.validate(orderFilter);
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            model.addAttribute("orders", orderService.findAll());
+        } else {
+            orderFilter = orderService.validate(orderFilter);
+            model.addAttribute("orders", orderService.findWithFilter(orderFilter));
+        }
 
         model.addAttribute("statuses", orderService.findAllStatuses());
         model.addAttribute("payments", orderService.findAllTypesOfPayment());
         model.addAttribute("deliveries", orderService.findAllTypesOfDelivery());
-        model.addAttribute("orders", orderService.findWithFilter(orderFilter));
         model.addAttribute("of", orderFilter);
 
         return "orders_panel";
     }
 
     @GetMapping("/sales_stat")
-    public String getSalesStat(
+    public String getSalesStatList(
             Model model) {
 
         model.addAttribute("sales_stat", statService.findAllSalesStat());

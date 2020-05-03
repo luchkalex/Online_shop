@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Autowired used here because of circle definition in class
+     * Annotation @Autowired used here because of circle definition in UserService class
      *
      * @see UserService
      */

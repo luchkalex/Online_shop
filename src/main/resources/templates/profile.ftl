@@ -8,33 +8,67 @@
         <form method="post" novalidate>
             <div class="form-group">
                 <label for="username_input">User name</label>
-                <input type="text" class="form-control col-sm-4" name="username" id="username_input"
+                <input type="text" maxlength="255" class="form-control col-sm-4" name="username" id="username_input"
                        placeholder="User name" value="${user.username!''}">
             </div>
+
+            <#if usernameError??>
+                <div class="alert alert-danger">
+                    ${usernameError}
+                </div>
+            </#if>
+
             <div class="form-group">
                 <label for="password_input">Password</label>
-                <input type="password" class="form-control col-sm-4" name="password" id="password_input"
+                <input type="password" maxlength="255" class="form-control col-sm-4" name="password" id="password_input"
                        placeholder="Password">
             </div>
+
+            <#if passwordError??>
+                <div class="alert alert-danger">
+                    ${passwordError}
+                </div>
+            </#if>
+
             <div class="form-group">
                 <label for="email_input">Email</label>
-                <input type="email" class="form-control col-sm-4" name="email" id="email_input" value="${user.email!''}"
+                <input type="email" maxlength="255" class="form-control col-sm-4" name="email" id="email_input"
+                       value="${user.email!''}"
                        placeholder="Email">
             </div>
 
+            <#if emailError??>
+                <div class="alert alert-danger">
+                    ${emailError}
+                </div>
+            </#if>
+
             <div class="form-group">
                 <label for="address_input">Address</label>
-                <input type="text" class="form-control col-sm-4" name="address" id="address_input"
+                <input type="text" maxlength="255" class="form-control col-sm-4" name="address" id="address_input"
                        value="${user.address!''}"
                        placeholder="Address">
             </div>
 
+            <#if addressError??>
+                <div class="alert alert-danger">
+                    ${addressError}
+                </div>
+            </#if>
+
 
             <div class="form-group">
                 <label for="phone_input">Phone</label>
-                <input type="tel" class="form-control col-sm-4" name="phone" id="phone_input" value="${user.phone!''}"
-                       placeholder="Phone">
+                <input type="tel" maxlength="13" class="form-control col-sm-4" name="phone" id="phone_input"
+                       value="${user.phone!''}"
+                       placeholder="+(xxx)-xx-xxx-xx-xx">
             </div>
+
+            <#if phoneError??>
+                <div class="alert alert-danger">
+                    ${phoneError}
+                </div>
+            </#if>
 
             <#--FIXME: DELEDE DOESN'T throw you in right place-->
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>

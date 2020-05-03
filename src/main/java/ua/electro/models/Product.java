@@ -5,8 +5,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,7 +53,7 @@ public class Product implements Serializable {
 
 
     @NonNull
-    @Length(max = 255, message = "Title is too long (max - 45 symbols)")
+    @Length(max = 255, message = "Title is too long (max - 255 symbols)")
     @NotBlank(message = "Title can't be empty!")
     private String title;
 
@@ -60,6 +62,8 @@ public class Product implements Serializable {
     @NotBlank(message = "Description can't be empty!")
     private String description;
 
+    @Positive(message = "Price can't be negative")
+    @Max(value = 300000, message = "Price is too large (max 300,000)")
     @Column(name = "price", columnDefinition = "float default 0")
     @NotNull(message = "Price can't be empty")
     private Float price;

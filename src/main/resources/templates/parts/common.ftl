@@ -8,7 +8,7 @@
     <head>
         <title>Electro</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <#--        <link rel="stylesheet" href="style.css">-->
+
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -19,27 +19,19 @@
         <script src="https://kit.fontawesome.com/2f81db4535.js" crossorigin="anonymous"></script>
     </head>
     <body>
+    <#if user?? && user.id?? && !user.active>
+        <div class="container mt-5 text-center">
+            <h3>This user is not available please login</h3>
+            <form action="/logout" method="post">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                <input type="submit" class="btn btn-primary mt-5" value="Login"/>
+            </form>
+        </div>
 
-
-    <#if user??>
-        user exists
-        <#if user.active>user active <#else >user is not active</#if>
-    <#else >
-        user not exists from user??
-    </#if>
-
-    <#if !user??>
-        user not exists
-    </#if>
-
-    <#if (user?? && user.active) || (!user??)>
+    <#else>
         <#include "navbar.ftl">
 
-    <#---->
-
-
         <#nested>
-
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -55,14 +47,6 @@
                 integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
                 crossorigin="anonymous"></script>
         <script src="/static/main.js"></script>
-    <#else>
-        <div class="container mt-5 text-center">
-            <h3>This user is not available please login</h3>
-            <form action="/logout" method="post">
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                <input type="submit" class="btn btn-primary mt-5" value="Login"/>
-            </form>
-        </div>
     </#if>
     </body>
     </html>

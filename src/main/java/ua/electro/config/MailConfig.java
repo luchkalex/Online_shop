@@ -8,6 +8,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * Class made to configure main sending to user after registration
+ */
 @Configuration
 public class MailConfig {
 
@@ -50,7 +53,6 @@ public class MailConfig {
         properties.setProperty("mail.smtp.auth", auth);
         properties.setProperty("mail.transport.protocol", protocol);
 
-        /*At the production to disable this var debug*/
         properties.setProperty("mail.debug", debug);
         properties.setProperty("mail.smtp.starttls.enable", enable);
         return mailSender;

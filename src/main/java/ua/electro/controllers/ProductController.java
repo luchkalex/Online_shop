@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import ua.electro.models.*;
 import ua.electro.servises.CategoryService;
 import ua.electro.servises.ProductService;
 import ua.electro.servises.UserService;
+import ua.electro.servises.accessoryServices.CustomFileValidator;
 import ua.electro.servises.accessoryServices.ProductFilter;
 
 import javax.validation.Valid;
@@ -30,11 +32,13 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final CustomFileValidator customFileValidator;
 
-    public ProductController(ProductService productService, CategoryService categoryService, UserService userService) {
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, CustomFileValidator customFileValidator) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
+        this.customFileValidator = customFileValidator;
     }
 
     @Value("${upload.path}")
@@ -46,7 +50,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/add_product_choice_category")
-    public String preAddProduct(Model model) {
+    public String getPreAddProductPage(Model model) {
 
         model.addAttribute("categories", categoryService.findAll());
         return "preAddProduct";
@@ -54,7 +58,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/add_product")
-    public String addProduct(
+    public String getAddProductPage(
             @RequestParam("category_id") Integer category_id,
             Model model) {
 
@@ -67,7 +71,6 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add_product")
     public String addProduct(
-            // TODO: 4/25/20 Price separated?
             @RequestParam("category_id") Integer category_id,
             @Valid @ModelAttribute("product") Product product,
             BindingResult bindingResult,
@@ -85,19 +88,22 @@ public class ProductController {
             product.setCategory(category);
         }
 
+        if (!StringUtils.isEmpty(file.getOriginalFilename())) {
+            customFileValidator.validate(file, bindingResult);
+        }
+
         if (bindingResult.hasErrors()) {
 
             val errorMap = ControllerUtil.getErrors(bindingResult);
-            val categories = categoryService.findAll();
+            val features = categoryService.findFeatureOfCategoryByCategory(categoryService.findOneById(Long.valueOf(category_id)));
+            model.addAttribute("features_of_cat", features);
             model.mergeAttributes(errorMap);
             model.addAttribute("product", product);
-            model.addAttribute("categories", categories);
             return "addProduct";
 
         } else {
 
-            saveFile(product, file);
-
+            product.setPhoto(saveFile(product, file));
             product.setDiscount(0f);
             product.setRating(0f);
 
@@ -111,7 +117,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/edit/{product}")
-    public String editProduct(
+    public String getEditProductPage(
             @PathVariable("product") @ModelAttribute Product product,
             Model model) {
 
@@ -126,20 +132,17 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit/{product_id}")
     public String editProduct(
-            // TODO: 4/25/20 Price separated?
             @RequestParam("category_id") Integer category_id,
             @PathVariable("product_id") Product oldProduct,
             @Valid @ModelAttribute("newProduct") Product newProduct,
             BindingResult bindingResult,
             @RequestParam(required = false) List<Long> features_id,
-            /*TODO: Add file validation on (Type, size, ect)*/
             @RequestParam("file") MultipartFile file,
             Model model) throws IOException {
 
         val category = categoryService.findOneById(Long.valueOf(category_id));
 
         newProduct.getValuesOfFeatures().clear();
-
         newProduct.setValuesOfFeatures(categoryService.getListValuesOfFeatures(features_id));
 
         if (category != null) {
@@ -150,11 +153,16 @@ public class ProductController {
 
         newProduct.setDiscount(oldProduct.getDiscount());
 
+        if (!StringUtils.isEmpty(file.getOriginalFilename())) {
+            customFileValidator.validate(file, bindingResult);
+        }
+
         if (bindingResult.hasErrors()) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
-            val categories = categoryService.findAll();
+            val features = categoryService.findFeatureOfCategoryByCategory(categoryService.findOneById(Long.valueOf(category_id)));
+            model.addAttribute("features_of_cat", features);
             model.mergeAttributes(errorMap);
-            model.addAttribute("categories", categories);
+            model.addAttribute("product", newProduct);
             model.addAttribute("type", "edit");
             return "addProduct";
         } else {
@@ -181,7 +189,7 @@ public class ProductController {
         return "redirect:/control_panel/products";
     }
 
-    /*-----------------------Delete product---------------------------*/
+    /*-----------------------Remove product---------------------------*/
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/delete/{product_id}")
@@ -195,7 +203,6 @@ public class ProductController {
 
     /*-----------------------Income---------------------------*/
 
-    /*TODO: Add validation on Number format (quantity)*/
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/income/{product}")
     public String addIncome(
@@ -215,43 +222,59 @@ public class ProductController {
     public String showCatalog(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
-            @ModelAttribute("productFilter") ProductFilter productFilter,
+            @Valid @ModelAttribute("productFilter") ProductFilter productFilter,
+            BindingResult bindingResult,
             Model model) {
 
-        productFilter = productService.validate(productFilter);
+        List<Product> products;
 
-        val products = productService.findWithFilter(productFilter);
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            products = productService.findAll();
+        } else {
+            productFilter = productService.validate(productFilter);
+            products = productService.findWithFilter(productFilter);
+        }
 
         user = userService.getActualUser(user, session_user);
         model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
 
-
         model.addAttribute("pf", productFilter);
         return "catalog";
     }
 
     @GetMapping("/category/{category_id}")
-    public String getProductOfCategory(
+    public String getCatalogByCategory(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @PathVariable("category_id") Integer category_id,
             @RequestParam(required = false) List<Long> features_id,
-            @ModelAttribute("productFilter") ProductFilter productFilter,
+            @Valid @ModelAttribute("productFilter") ProductFilter productFilter,
+            BindingResult bindingResult,
             Model model) {
 
-        user = userService.getActualUser(user, session_user);
+        List<Product> products;
 
+        user = userService.getActualUser(user, session_user);
         val category = new Category(Long.valueOf(category_id));
 
         val features = categoryService.findFeatureOfCategoryByCategory(category);
 
-        productFilter.setCategory(category.getId());
+        if (bindingResult.hasErrors()) {
+            val errorMap = ControllerUtil.getErrors(bindingResult);
+            model.mergeAttributes(errorMap);
+            products = productService.findByCategoryId(category.getId());
 
-        productFilter = productService.validate(productFilter);
+        } else {
+            productFilter = productService.validate(productFilter);
 
-        List<Product> products = productService.findWithFilter(productFilter);
+            productFilter.setCategory(category.getId());
+
+            products = productService.findWithFilter(productFilter);
+        }
 
         if (features_id != null) {
             products = productService.filterWithFeatures(features_id, products);
@@ -261,7 +284,6 @@ public class ProductController {
         model.addAttribute("products", products);
         model.addAttribute("features_of_cat", features);
         model.addAttribute("type", "category");
-//        model.addAttribute("cur_category", category);
         model.addAttribute("pf", productFilter);
         return "catalog";
     }
@@ -269,7 +291,7 @@ public class ProductController {
     /*-----------Product page-----------------------*/
 
     @GetMapping("/{product_id}")
-    public String getProduct(
+    public String getProductPage(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @PathVariable("product_id") Product product,
@@ -299,27 +321,27 @@ public class ProductController {
     /*-----------------------Cart-----------------------*/
 
     @GetMapping("/add_to_cart/{product_id}")
-    public String addToCart(
+    public String addProductToCart(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
             @PathVariable("product_id") Product product,
             Model model
     ) {
-
         user = userService.getActualUser(user, session_user);
-
-        // FIXME: 4/22/20 Cart Item use Id and primary key. It is mean that we can add similar item with identical
-        //  product and user. But if I create complex key, program goes down with exception
-        //  java.sql.SQLNonTransientConnectionException: Communications link failure during rollback(). Transaction resolution unknown.
-
         user = productService.addCartItems(user, product);
 
         model.addAttribute("user", user);
-
         return "redirect:/users/cart";
     }
 
-
+    /**
+     * Method to save
+     *
+     * @param file          to local repository
+     *                      add path of this file to
+     * @param product#photo as well
+     * @return resultFileName or null
+     */
     private String saveFile(Product product, @RequestParam("file") MultipartFile file) throws IOException {
         if (!Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             File uploadDir = new File(uploadPath);

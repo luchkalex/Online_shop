@@ -3,7 +3,7 @@
 
 <@c.page>
     <@s.sidebar>
-        <div class="container-fluid ml-5">
+        <div class="container-fluid mw-100 ml-5">
 
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <h3>Orders</h3>
@@ -29,37 +29,40 @@
                         </tr>
 
                         <#--FILTERS PANEL-->
-                        <tr>
-                            <td class="text-center">
+                        <tr class="mw-100">
+                            <td class="text-center col-sm-1">
                                 <div>
-                                    <input type="text" value="${of.idMin}" placeholder="min" name="idMin"
-                                           class="col-sm-5">
+                                    <input class="w-100" type="number" min="0" value="<#if of.idMin??>${of.idMin}</#if>"
+                                           placeholder="min" name="idMin">
                                 </div>
                                 <div>
-                                    <input type="text" value="${of.idMax?string["0"]}" placeholder="max" name="idMax"
-                                           class="col-sm-5">
-                                </div>
-                            </td>
-
-                            <td>
-                                <input type="text" value="${of.username}" placeholder="Username" name="username"
-                                       class="">
-                            </td>
-
-                            <td class="text-center">
-                                <div>
-                                    <input type="text" value="${of.totalMin}" placeholder="min" name="totalMin"
-                                           class="col-sm-5">
-                                </div>
-                                <div>
-                                    <input type="text" value="${of.totalMax?string["0"]}" placeholder="max"
-                                           name="totalMax"
-                                           class="col-sm-5">
+                                    <input class="w-100" type="number" max="4000000000"
+                                           value="<#if of.idMax??>${of.idMax?string["0"]}</#if>" placeholder="max"
+                                           name="idMax">
                                 </div>
                             </td>
 
-                            <td>
-                                <select class="custom-select" id="payment_select" name="payment">
+                            <td class="col-2">
+                                <input class="w-100" type="text" maxlength="255"
+                                       value="<#if of.username??>${of.username}</#if>" placeholder="Username"
+                                       name="username">
+                            </td>
+
+                            <td class="text-center col-sm-1">
+                                <div>
+                                    <input class="w-100" type="number" min="0"
+                                           value="<#if of.totalMin??>${of.totalMin}</#if>" placeholder="min"
+                                           name="totalMin">
+                                </div>
+                                <div>
+                                    <input class="w-100" type="number" max="4000000000"
+                                           value="<#if of.totalMax??>${of.totalMax?string["0"]}</#if>" placeholder="max"
+                                           name="totalMax">
+                                </div>
+                            </td>
+
+                            <td class="col-2">
+                                <select class="custom-select w-100" id="payment_select" name="payment">
                                     <option value=''>Payment</option>
                                     <#list payments as payment>
                                         <option value=${payment.id}>${payment.title}</option>
@@ -67,8 +70,8 @@
                                 </select>
                             </td>
 
-                            <td>
-                                <select class="custom-select" id="delivery_select" name="delivery">
+                            <td class="col-2">
+                                <select class="custom-select w-100" id="delivery_select" name="delivery">
                                     <option value=''>Delivery</option>
                                     <#list deliveries as delivery>
                                         <option value=${delivery.id}>${delivery.title}</option>
@@ -76,12 +79,13 @@
                                 </select>
                             </td>
 
-                            <td>
-                                <input type="text" value="${of.address}" placeholder="Address" name="address">
+                            <td class="col-2">
+                                <input type="text" maxlength="255" value="${of.address}" placeholder="Address"
+                                       name="address">
                             </td>
 
-                            <td>
-                                <select class="custom-select" id="statuses_select" name="status">
+                            <td class="col-2">
+                                <select class="custom-select w-100" id="statuses_select" name="status">
                                     <option value='-1'>Status</option>
                                     <#list statuses as status>
                                         <option value=${status.id}>${status.title}</option>
@@ -89,14 +93,13 @@
                                 </select>
                             </td>
 
-                            <td class="text-center">
+                            <td class="text-center col-sm-2">
                                 <div>
-                                    <input type="date" dataformatas="yyyy/mm/dd" name="dateMin_str"
-                                           class="col-sm-5">
+                                    <input class="w-100" type="date" min="2000/01/01" dataformatas="yyyy/mm/dd"
+                                           name="dateMin_str">
                                 </div>
                                 <div>
-                                    <input type="date" dataformatas="yyyy/mm/dd" name="dateMax_str"
-                                           class="col-sm-5">
+                                    <input class="w-100" type="date" dataformatas="yyyy/mm/dd" name="dateMax_str">
                                 </div>
                             </td>
 
@@ -104,6 +107,56 @@
                                 <input type="submit" class="btn btn-info" value="Search">
                             </td>
                         </tr>
+
+
+                        <tr>
+                            <#if idMinError??>
+                                <div class="alert alert-danger">
+                                    ${idMinError}
+                                </div>
+                            </#if>
+                        </tr>
+
+                        <tr>
+                            <#if idMaxError??>
+                                <div class="alert alert-danger">
+                                    ${idMaxError}
+                                </div>
+                            </#if>
+                        </tr>
+
+                        <tr>
+                            <#if totalMinError??>
+                                <div class="alert alert-danger">
+                                    ${totalMinError}
+                                </div>
+                            </#if>
+                        </tr>
+
+                        <tr>
+                            <#if totalMaxError??>
+                                <div class="alert alert-danger">
+                                    ${totalMaxError}
+                                </div>
+                            </#if>
+                        </tr>
+
+                        <tr>
+                            <#if usernameError??>
+                                <div class="alert alert-danger">
+                                    ${usernameError}
+                                </div>
+                            </#if>
+                        </tr>
+
+                        <tr>
+                            <#if addressError??>
+                                <div class="alert alert-danger">
+                                    ${addressError}
+                                </div>
+                            </#if>
+                        </tr>
+
 
                         </thead>
                         <tbody>
@@ -127,18 +180,21 @@
                                 <td class="text-center">${order.orderDate!'No date'}</td>
                                 <td>
                                     <a href="/users/order/${order.id}" type="submit"
-                                       class="btn btn-primary btn-middle-size">View</a>
+                                       class="btn btn-primary btn-middle-size">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <#if order.orderStatuses.title = "Awaiting confirmation">
                                         <a href="/users/Accepted/${order.id}" type="submit"
-                                           class="btn btn-info btn-middle-size mt-2">Accept</a>
+                                           class="btn btn-info btn-middle-size mt-2"><i class="fas fa-check-circle"></i></a>
 
                                         <a href="/users/Rejected/${order.id}" type="submit"
-                                           class="btn btn-danger btn-middle-size mt-2">Reject</a>
+                                           class="btn btn-danger btn-middle-size mt-2"><i
+                                                    class="fas fa-times-circle"></i></a>
                                     </#if>
 
                                     <#if order.orderStatuses.title = "Accepted" || order.orderStatuses.title = "Rejected">
                                         <a href="/users/Completed/${order.id}" type="submit"
-                                           class="btn btn-info btn-middle-size mt-2">Complete</a>
+                                           class="btn btn-warning btn-middle-size mt-2">Complete</a>
                                     </#if>
                                 </td>
                             </tr>

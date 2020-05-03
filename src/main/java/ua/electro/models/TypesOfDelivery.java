@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TypesOfDelivery implements Serializable {
-    //    PICKUP, COURIER
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NonNull

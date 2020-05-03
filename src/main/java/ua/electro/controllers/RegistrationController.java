@@ -1,18 +1,15 @@
 package ua.electro.controllers;
 
+import lombok.val;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ua.electro.models.User;
 import ua.electro.servises.UserService;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @Controller
 public class RegistrationController {
@@ -31,7 +28,7 @@ public class RegistrationController {
     @PostMapping("/registration")
     public String addUser(
             @RequestParam String conf_password,
-            @Valid User user,
+            @Valid @ModelAttribute User user,
             BindingResult bindingResult,
             Model model) {
 
@@ -46,11 +43,10 @@ public class RegistrationController {
         }
 
         if (bindingResult.hasErrors() || isConfirmEmpty) {
-            Map<String, String> errors = ControllerUtil.getErrors(bindingResult);
+            val errors = ControllerUtil.getErrors(bindingResult);
             model.mergeAttributes(errors);
             return "registration";
         }
-
 
         if (!userService.addUser(user)) {
             model.addAttribute("usernameError", "User exists!");
@@ -61,7 +57,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code) {
+    public String activateUser(Model model, @PathVariable String code) {
 
         boolean isActivated = userService.activateUser(code);
 

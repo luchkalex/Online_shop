@@ -3,12 +3,11 @@
 
 <@c.page>
     <@s.sidebar>
-        <div class="container-fluid ml-5">
+        <div class="container-fluid ml-5 w-50">
 
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
                 <h3>Features</h3>
-
 
                 <a href="#new-feature" data-toggle="collapse" aria-expanded="false"
                    class="dropdown-toggle btn btn-info ml-auto">
@@ -20,7 +19,7 @@
             <div id="new-feature" class="collapse mt-2">
                 <form action="/features/add_feature">
                     <label for="feature_title" class="mt-2">Title</label>
-                    <input type="text" name="title"
+                    <input type="text" maxlength="45" name="title"
                            class="form-control ${(titleError??)?string('is-invalid', '')} my-1 col-sm-4"
                            id="feature_title"/>
                     <input type="submit" class="btn btn-info" value="Create">
@@ -69,7 +68,7 @@
                                 <div class="collapse" id="editFeature${feature.id}">
                                     <form action="/features/edit_feature">
                                         <input type="hidden" value="${feature.id}" name="feature_id">
-                                        <input type="text" name="title" value="${feature.title}">
+                                        <input type="text" maxlength="45" name="title" value="${feature.title}">
 
                                         <input type="submit" class="btn btn-info" value="Save">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
@@ -80,7 +79,7 @@
                                     <form action="/features/add_value">
                                         <input type="hidden" value="${feature.id}" name="feature_id">
 
-                                        <input type="text" name="value_title">
+                                        <input type="text" maxlength="45" name="value_title">
 
                                         <input type="submit" class="btn btn-info" value="Add">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>

@@ -12,7 +12,8 @@
             <span class="font-weight-bold text-primary ml-2 mt-1 valueSpan" id="rating_value">0</span>
 
             <label for="feedback_text"></label>
-            <input type="text" placeholder="Text of feedback" id="feedback_text" name="text">
+            <textarea name="text" maxlength="800" placeholder="Text of feedback" id="feedback_text" cols="80"
+                      rows="10"></textarea>
 
             <input type="hidden" value="${product.id}">
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>

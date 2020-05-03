@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,7 +51,7 @@ public class User implements UserDetails, Serializable {
 
     private String activationCode;
 
-    /*TODO: Make validator of phone Using @Pattern I suppose*/
+    @Pattern(regexp = "\\+\\d*$", message = "Wrong format of phone number")
     @Length(max = 13, message = "Phone number is too long (max - 13 symbols)")
     private String phone;
 

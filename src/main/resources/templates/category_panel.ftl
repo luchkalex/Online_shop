@@ -3,12 +3,11 @@
 
 <@c.page>
     <@s.sidebar>
-        <div class="container-fluid ml-5">
+        <div class="container-fluid ml-5 w-50">
 
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
                 <h3>Categories</h3>
-
 
                 <a href="#new-category" data-toggle="collapse" aria-expanded="false"
                    class="dropdown-toggle btn btn-info ml-auto">
@@ -20,7 +19,7 @@
             <div id="new-category" class="collapse mt-2">
                 <form action="/categories/add_category">
                     <label for="category_title" class="mt-2">Title</label>
-                    <input type="text" name="title"
+                    <input type="text" maxlength="45" name="title"
                            class="form-control ${(titleError??)?string('is-invalid', '')} my-1 col-sm-4"
                             <#--                           value="<#if category?? && !titleError??>${category.title}</#if>" placeholder="Enter title"-->
                            id="category_title"/>
@@ -71,7 +70,7 @@
                                 <div class="collapse" id="editCategory${category.id}">
                                     <form action="/categories/edit_category">
                                         <input type="hidden" value="${category.id}" name="category_id">
-                                        <input type="text" name="title" value="${category.title}">
+                                        <input type="text" maxlength="45" name="title" value="${category.title}">
 
                                         <input type="submit" class="btn btn-info" value="Save">
                                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
