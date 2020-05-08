@@ -9,11 +9,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-<!--        <maven.compiler.source>1.6</maven.compiler.source>-->
-<!--        <maven.compiler.target>1.6</maven.compiler.target>-->
-<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
-<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
-<!--        <failOnMissingWebXml>false</failOnMissingWebXml>-->
         <java.version>1.8</java.version>
     </properties>
 
@@ -34,14 +29,21 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mustache</artifactId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <dependency>
@@ -56,10 +58,27 @@
             <version>8.0.13</version>
         </dependency>
 
-        <!-- security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
