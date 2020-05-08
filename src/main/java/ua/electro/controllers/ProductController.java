@@ -34,7 +34,11 @@ public class ProductController {
     private final UserService userService;
     private final CustomFileValidator customFileValidator;
 
-    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, CustomFileValidator customFileValidator) {
+    public ProductController(
+            ProductService productService,
+            CategoryService categoryService,
+            UserService userService,
+            CustomFileValidator customFileValidator) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
@@ -222,12 +226,16 @@ public class ProductController {
     public String showCatalog(
             @AuthenticationPrincipal User user,
             @ModelAttribute("session_user") User session_user,
+            /*ProductFilter special class used to filter products by fields*/
             @Valid @ModelAttribute("productFilter") ProductFilter productFilter,
+            /*If ProductFilter has errors with data binding for example
+              if price is negative then bindingResult will contain these errors*/
             BindingResult bindingResult,
             Model model) {
 
         List<Product> products;
 
+        /*If filter of product has errors then return error message back*/
         if (bindingResult.hasErrors()) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
             model.mergeAttributes(errorMap);
@@ -237,11 +245,14 @@ public class ProductController {
             products = productService.findWithFilter(productFilter);
         }
 
+        /*getActualUser() returns the user depending on whether
+          he is authorized or not*/
         user = userService.getActualUser(user, session_user);
+
+        /*Objects that returns to view*/
         model.addAttribute("cartItems", user.getCartItems());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("products", products);
-
         model.addAttribute("pf", productFilter);
         return "catalog";
     }

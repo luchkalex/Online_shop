@@ -18,13 +18,14 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepo productRepo;
-
     private final IncomeRepo incomeRepo;
     private final StatusesRepo statusesRepo;
-
     private final EntityManager entityManager;
 
-    public ProductService(ProductRepo productRepo, IncomeRepo incomeRepo, StatusesRepo statusesRepo, EntityManager entityManager) {
+    public ProductService(ProductRepo productRepo,
+                          IncomeRepo incomeRepo,
+                          StatusesRepo statusesRepo,
+                          EntityManager entityManager) {
         this.productRepo = productRepo;
         this.incomeRepo = incomeRepo;
         this.statusesRepo = statusesRepo;

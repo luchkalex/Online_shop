@@ -17,9 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-
-/*This controller made for user management*/
-
 /*PreAuthorize means that you have to have privileges to get access to this methods */
 /*In this case only ADMIN has access to user list and can change it*/
 @Controller
@@ -88,6 +85,8 @@ public class UserController {
             @ModelAttribute("session_user") User session_user,
             Model model) {
 
+        /*getActualUser() returns the user depending on whether
+          he is authorized or not*/
         user = userService.getActualUser(user, session_user);
 
         Set<CartItem> cartItems = getCartItems(user);
@@ -104,11 +103,15 @@ public class UserController {
             @ModelAttribute("session_user") User session_user,
             @RequestParam("cartItem_id") Long cartItem_id,
             @Valid @ModelAttribute("cart_item") CartItem cartItem,
+            /*If CartItem has errors with data binding for example
+              if quantity is negative or null then bindingResult
+              will contain these errors*/
             BindingResult bindingResult,
             Model model) {
 
         user = userService.getActualUser(user, session_user);
 
+        /*If entered data has errors then return error message back*/
         if (bindingResult.hasErrors()) {
             val errorMap = ControllerUtil.getErrors(bindingResult);
             model.mergeAttributes(errorMap);
@@ -121,8 +124,10 @@ public class UserController {
             for (CartItem u_cartItem : user.getCartItems()) {
                 if (u_cartItem.getId().equals(cartItem_id)) {
 
+                    /*Get current quantity of product*/
                     Long current_quantity = productService.findQuantityByProductId(u_cartItem.getProduct().getId());
 
+                    /*Compare with quantity that user have entered*/
                     if (current_quantity < cartItem.getQuantity()) {
 
                         model.addAttribute("saveItemError", "Sorry, we do not have that amount of product");
@@ -132,6 +137,8 @@ public class UserController {
                     }
                     u_cartItem.setQuantity(cartItem.getQuantity());
 
+                    /*If user authorised then save
+                    cart items data in database*/
                     if (user.getId() != null) {
                         cartService.saveSet(Collections.singleton(u_cartItem));
                     }
@@ -189,6 +196,7 @@ public class UserController {
         return "editOrderPage";
     }
 
+
     @PostMapping("order_maker")
     public String makeOrder(
             @AuthenticationPrincipal User user,
@@ -209,9 +217,12 @@ public class UserController {
             model.addAttribute("user", user);
             return "editOrderPage";
         } else {
+
+            /*Assign to order values of types of payment and delivery*/
             order.setTypeOfPayment(orderService.findOneTypeOfPaymentById(payment_id));
             order.setTypesOfDelivery(orderService.findOneDeliveryById(delivery_id));
             order.setTotal(0);
+
             /*Copy from cart items to order items*/
             user.getCartItems().forEach(cartItem -> {
                 order.getOrderItems().add(new OrderItem(
@@ -219,6 +230,7 @@ public class UserController {
                         cartItem.getQuantity(),
                         order
                 ));
+                /*Total calculation: for each item -> total += quantity * (price - discount)*/
                 order.setTotal(order.getTotal() + (cartItem.getQuantity() * (cartItem.getProduct().getPrice() - cartItem.getProduct().getDiscount())));
             });
 
@@ -229,6 +241,7 @@ public class UserController {
 
             /*Clear cart in db*/
             cartService.deleteSet(user.getCartItems());
+            user.getCartItems().clear();
 
             orderService.save(order);
 

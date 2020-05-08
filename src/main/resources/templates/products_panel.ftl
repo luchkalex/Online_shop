@@ -193,7 +193,6 @@
                                             <i class="fas fa-trash-alt" style="color: red"></i>
                                         </a>
 
-                                        <#--FIXME: First product in list haven't form element-->
                                         <div class="collapse" id="quantityInput${product.id}">
                                             <form action="/products/income/${product.id}">
                                                 <input type="text" class="form-control-sm w-100" name="quantity">

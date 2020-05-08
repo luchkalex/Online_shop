@@ -35,6 +35,19 @@
                 </div>
             </#if>
 
+            <div id="email" class="mt-3">
+                <label for="email_inp">Email</label>
+                <input type="email" required maxlength="255" id="email_inp" class="form-control-sm col-sm-5"
+                       name="customerEmail"
+                       value="<#if user.email??>${user.email}</#if>">
+            </div>
+
+            <#if customerEmailError??>
+                <div class="invalid-feedback d-block">
+                    ${customerEmailError}
+                </div>
+            </#if>
+
             <table class="table table-striped table-hover ">
                 <thead>
                 <tr>

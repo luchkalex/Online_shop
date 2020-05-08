@@ -1,7 +1,5 @@
 <#import "parts/common.ftl" as c>
 
-<#--FIXME: Wrong display if title is too long-->
-
 <@c.page>
     <div class="container form-group">
         <form method="post" enctype="multipart/form-data"
@@ -63,8 +61,6 @@
                     ${photoError}
                 </div>
             </#if>
-
-            <#--TODO: Add file error-->
 
             <input type="hidden" name="productStatus" value="1">
 

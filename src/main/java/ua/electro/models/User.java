@@ -64,20 +64,6 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
 
-    /*@ElementCollection - We use @ElementCollection annotation to declare an element-collection
-        mapping. All the records of the collection are stored in a separate table.
-        The configuration for this table is specified using the @CollectionTable annotation.
-
-    * @CollectionTable - The @CollectionTable annotation is used to specify the name of the
-        table that stores all the records of the collection, and the JoinColumn that refers
-        to the primary table.
-
-    * @Enumerated
-    * @JoinColumn
-    * FetchType -  it is mean which type of uploading we use
-    *   EAGER - mean that at user request all data of user will be uploaded at the moment. Use when have little data
-    *   LAZY - only when we touch this field. Use when there are a lot of data*/
-
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

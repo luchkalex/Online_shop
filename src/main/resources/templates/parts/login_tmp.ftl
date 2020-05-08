@@ -59,8 +59,6 @@
                 user</a></#if></div>
     </form>
 
-
-
 </#macro>
 
 <#macro logout>

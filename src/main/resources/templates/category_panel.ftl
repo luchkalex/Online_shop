@@ -21,7 +21,6 @@
                     <label for="category_title" class="mt-2">Title</label>
                     <input type="text" maxlength="45" name="title"
                            class="form-control ${(titleError??)?string('is-invalid', '')} my-1 col-sm-4"
-                            <#--                           value="<#if category?? && !titleError??>${category.title}</#if>" placeholder="Enter title"-->
                            id="category_title"/>
                     <input type="submit" class="btn btn-info" value="Create">
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>

@@ -165,7 +165,12 @@
                             <tr>
                                 <td class="text-center">${order.id}</td>
 
-                                <td><#if order.user??>${order.user.username}<#else >Unknown</#if></td>
+                                <td>
+                                    <#if order.user??>${order.user.username}<#else >Unknown</#if><br>
+                                    <#if order.customerEmail?has_content>Email: ${order.customerEmail}
+                                        <br><#elseif order.user??>Email: ${order.user.email}<br></#if>
+                                    <#if order.user?? && order.user.phone?has_content>Phone: ${order.user.phone}</#if>
+                                </td>
 
                                 <td class="text-center">${order.total}</td>
 
@@ -192,7 +197,7 @@
                                                     class="fas fa-times-circle"></i></a>
                                     </#if>
 
-                                    <#if order.orderStatuses.title = "Accepted" || order.orderStatuses.title = "Rejected">
+                                    <#if order.orderStatuses.title = "Accepted">
                                         <a href="/users/Completed/${order.id}" type="submit"
                                            class="btn btn-warning btn-middle-size mt-2">Complete</a>
                                     </#if>

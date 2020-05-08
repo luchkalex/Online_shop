@@ -19,16 +19,7 @@
         <script src="https://kit.fontawesome.com/2f81db4535.js" crossorigin="anonymous"></script>
     </head>
     <body>
-    <#if user?? && user.id?? && !user.active>
-        <div class="container mt-5 text-center">
-            <h3>This user is not available please login</h3>
-            <form action="/logout" method="post">
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                <input type="submit" class="btn btn-primary mt-5" value="Login"/>
-            </form>
-        </div>
 
-    <#else>
         <#include "navbar.ftl">
 
         <#nested>
@@ -47,7 +38,6 @@
                 integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
                 crossorigin="anonymous"></script>
         <script src="/static/main.js"></script>
-    </#if>
     </body>
     </html>
 </#macro>

@@ -60,8 +60,8 @@
                                href="#editCartForm${cartItem.id?string['0']}"
                                form="editCartForm${cartItem.id?string['0']}">
 
-                        <a href="/users/deleteCart/${cartItem.id?string['0']}"><i class="fas fa-minus-circle"
-                                                                                  style="color: red"></i></a>
+                        <a href="/users/deleteCart/${cartItem.id?string['0']}" class="btn btn-danger"><i
+                                    class="fas fa-minus-circle"></i></a>
                     </td>
 
                 </tr>

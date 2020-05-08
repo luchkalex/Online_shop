@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,6 +30,10 @@ public class OrderOfProduct implements Serializable {
     @NotBlank(message = "Address can't be empty")
     @Length(max = 255, message = "Address is too long (max - 255 symbols)")
     private String address;
+
+    @NotBlank(message = "Email can't be empty")
+    @Email(message = "Email is not correct!")
+    private String customerEmail;
 
     private float total;
 

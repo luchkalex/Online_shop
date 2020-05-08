@@ -16,8 +16,8 @@ import ua.electro.repos.CommentRepo;
 import ua.electro.repos.UserRepo;
 import ua.electro.servises.accessoryServices.MailSender;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
-        user.setActive(true);
+        user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -86,37 +86,11 @@ public class UserService implements UserDetailsService {
         }
 
         user.setActivationCode(null);
+        user.setActive(true);
 
         userRepo.save(user);
 
         return true;
-    }
-
-
-    public List<User> findAll() {
-        return userRepo.findAll();
-    }
-
-    public void saveUser(String username, Map<String, String> form, User user) {
-
-        user.setUsername(username);
-
-        user.getRoles().clear();
-
-        /*Who knows how it works but it converts all available roles to Set<String>*/
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-
-
-        /*Assign to user this role if get value from form belong to available roles*/
-        for (String key : form.keySet()) {
-            if (roles.contains(key)) {
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
-
-        userRepo.save(user);
     }
 
 

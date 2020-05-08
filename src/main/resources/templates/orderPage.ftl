@@ -28,18 +28,21 @@
             </tr>
 
             <tr>
-                <td></td>
-                <td></td>
+                <td>Customer email</td>
+                <td><#if order.customerEmail?has_content>${order.customerEmail}<#elseif order.user??>${order.user.email}</#if></td>
             </tr>
 
-            <tr>
-                <td>Products</td>
-                <td></td>
-            </tr>
+            </tbody>
+        </table>
+
+
+        <h5 class="text-center">Products</h5>
+        <table class="table table-striped table-hover mt-4">
+            <tbody>
             <#list order.orderItems as orderItem>
                 <tr>
-                    <td class="text-center">${orderItem.product.title}</td>
-                    <td class="text-center">${orderItem.quantity}
+                    <td>${orderItem.product.title}</td>
+                    <td>${orderItem.quantity}
                         (${orderItem.quantity * (orderItem.product.price - orderItem.product.discount)}hrn)
                     </td>
                 </tr>
@@ -49,8 +52,8 @@
                 </tr>
             </#list>
             <tr class="bg-success">
-                <td class="text-center">Total sum</td>
-                <td class="text-center">${order.total}hrn</td>
+                <td>Total</td>
+                <td>${order.total}hrn</td>
             </tr>
             </tbody>
         </table>
